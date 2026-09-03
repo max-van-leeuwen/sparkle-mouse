@@ -9,9 +9,9 @@
 
 
 # Sparkle Mouse
-### Cute Customizable Particles 🐁✨
-GPU optimized sparkles for Windows + Mac + Web!
-<br>Tauri 2.0 app + JS package
+### Cute Customizable Particles! 🐁✨
+GPU optimized sparkles for Windows + Mac + Web
+<br>Tauri 2.0 App & JS Package
 <br>Made with Three.js
 
 [![Website](https://img.shields.io/badge/Website-sparklemou.se-blue)](https://www.sparklemou.se)
@@ -21,15 +21,15 @@ GPU optimized sparkles for Windows + Mac + Web!
 
 </div>
 
-The sparkle-mouse JS package is 100% free. Use it on your website!
+- The sparkle-mouse JS package is 100% free. Use it on your website!
 
-The desktop app is open-source. Please buy the installer from [itch.io](https://maxvanleeuwen.itch.io/sparkle-mouse) to support development! Thank you :)
+- The desktop app is open-source. Please buy the installer from [itch.io](https://maxvanleeuwen.itch.io/sparkle-mouse) to support development! Thank you :)
 
 <br>
 
 ## What Can It Do?
 
-Sparkle Mouse brings that nostalgic webcore aesthetic to your desktop or website. It renders customizable, pretty particles next to you cursor (or full-screen)!
+Sparkle Mouse brings that nostalgic webcore aesthetic to your desktop or website. It renders customizable particles next to you cursor, or full-screen.
 
 <br>
 <img src="readme-media/UI.gif" height="400" style="image-rendering: pixelated;"/>
@@ -43,7 +43,7 @@ I optimized the particles to run fully on the GPU, even with many different GIFs
 <br>
 
 ![Flowers](readme-media/flowers.gif)
-<i>Flower GIFs on each particle, from [GifCities!](https://gifcities.neocities.org/)</i>
+<i>Flower GIFs from GeoCities are playing on each particle, get the template [here](https://maxvanleeuwen.itch.io/webcore-fish-sparkle-template)!</i>
 
 <br>
 
@@ -57,7 +57,7 @@ For example, run `sparkle-mouse --headless template.sparkle` to start the app wi
 
 ![Custom shapes drawing](readme-media/manual-drawing.gif)
 
-See [this](https://github.com/max-van-leeuwen/sparkle-mouse/tree/main/examples) python example drawing a heart ❤️ shape on your desktop, using the HTTP API!
+See [this](https://github.com/max-van-leeuwen/sparkle-mouse/tree/main/examples) python example to learn how to draw shapes, using the HTTP API.
 <br>
 
 <br>
@@ -76,7 +76,7 @@ But these files can also be used on web, or with CLI.
 
 It's a JSON file containing all settings + image data (base64 and/or built-in image identifier). 
 
-Find the default sparkle template [here](src/templates/sparkles.sparkle)! ✨
+Find the default sparkle template [here](readme-media/Sparkles.sparkle)!
 
 <br>
 
