@@ -1,0 +1,115 @@
+html, body {
+  overscroll-behavior: none;
+}
+
+body {
+  color: white;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+  margin: 0;
+  height: 100vh;
+  font-family: 'Segoe UI', Tahoma, Arial, sans-serif;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+body.page-bliss {
+  background-image: url('bliss.jpg');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+}
+
+body.page-stars {
+  background-image: url('stars.webp');
+  background-size: auto;
+  background-position: top left;
+  background-attachment: fixed;
+  background-repeat: repeat;
+}
+
+body.page-solitaire {
+  background-color: #007700;
+}
+
+.info-container {
+  position: fixed;
+  top: 10px;
+  left: 10px;
+  z-index: 100000;
+  background: rgba(0, 0, 0, 0.7);
+  padding: 15px;
+  border-radius: 5px;
+  max-width: 400px;
+}
+
+.info-text {
+  margin-bottom: 10px;
+}
+
+.info-text h3 {
+  margin: 0 0 10px 0;
+  font-size: 16px;
+}
+
+.info-text p {
+  margin: 5px 0;
+}
+
+a {
+  color: #29caff;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+a:hover {
+  color: #f344ff;
+}
+
+.info-text pre {
+  background: rgba(0, 0, 0, 0.5);
+  padding: 8px;
+  border-radius: 3px;
+  font-family: 'Courier New', monospace;
+  font-size: 11px;
+  overflow-x: auto;
+  margin: 8px 0;
+}
+
+.nav-links {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.nav-links a, .nav-links label {
+  color: #000;
+  text-decoration: none;
+  background: linear-gradient(to bottom, #fff 0%, #ece9d8 100%);
+  padding: 3px 12px;
+  border-radius: 3px;
+  font-family: Tahoma, Arial, sans-serif;
+  font-size: 11px;
+  border: 1px solid #aca899;
+  border-top-color: #fff;
+  border-left-color: #fff;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.5), 0 1px 2px rgba(0,0,0,0.2);
+  cursor: pointer;
+}
+
+.nav-links a:hover, .nav-links label:hover {
+  background: linear-gradient(to bottom, #fff 0%, #e3ddc6 100%);
+}
+
+.nav-links a:active, .nav-links label:active {
+  background: linear-gradient(to bottom, #e3ddc6 0%, #fff 100%);
+  box-shadow: inset 0 1px 2px rgba(0,0,0,0.2);
+}
+
+.custom-file-label {
+  margin-left: auto;
+}
+
+#customFileInput {
+  display: none;
+}

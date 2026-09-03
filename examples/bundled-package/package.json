@@ -1,0 +1,19 @@
+{
+  "name": "sparkle-mouse-bundled",
+  "version": "1.0.0",
+  "description": "Bundled sparkle-mouse with all dependencies included",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "build": "vite build",
+    "preview": "vite preview",
+    "dev": "vite"
+  },
+  "devDependencies": {
+    "vite": "^5.0.0"
+  },
+  "dependencies": {
+    "sparkle-mouse": "^1.0.1",
+    "three": "^0.180.0"
+  }
+}

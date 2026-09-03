@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Sparkle Mouse 🐁✨</title>
+        <link rel="icon" type="image/png" href="sparkle-mouse.png">
+    <link rel="stylesheet" href="style.css">
+  </head>
+  <body class="page-bliss">
+    <div id="info-container-wrapper">
+      <!--#include virtual="info-container.html" -->
+    </div>
+    <script>
+      // fallback: load via fetch if SSI didn't work
+      if (document.getElementById('info-container-wrapper').children.length === 0) {
+        fetch('info-container.html')
+          .then(response => response.text())
+          .then(html => {
+            document.getElementById('info-container-wrapper').innerHTML = html;
+          })
+          .catch(err => console.error('Error loading info-container:', err));
+      }
+    </script>
+    
+    <script src="sparkle-mouse.bundle.iife.js"></script>
+    <script type="module">        
+        
+        // start custom .sparkle file
+
+        const sparkles = new SparkleMouse.SparkleMouse();
+        sparkles.start('./winxpcursors.sparkle').catch(err => {
+            console.error('Failed to load sparkles:', err);
+        });
+
+
+
+        // demo shapes when inactive
+        
+        // get shapes
+        import { shapeWilly } from './additionalDemoShapes.js'; // shape not included
+        const { shapeHeart, shapeSquiggly, shapeStar, shapeSwirl } = SparkleMouse; // default shapes
+        const demoShapes = [shapeHeart, shapeSquiggly, shapeStar, shapeSwirl, shapeWilly]; // combined
+
+        // start drawing when inactive for a while
+        const INACTIVITY_DELAY = 1700; // wait time (ms)
+        let inactivityTimeout = null;
+        function handleCursorActivity() {
+            if (!sparkles.isStarted) return;
+
+            // enable cursor tracking and disable demo drawing
+            sparkles.setCursorTracking(true);
+            sparkles.setDemoShapesDrawing(false);
+
+            // start new timeout
+            if (inactivityTimeout) clearTimeout(inactivityTimeout);
+            inactivityTimeout = setTimeout(() => {
+                sparkles.setCursorTracking(false);
+                sparkles.setDemoShapesDrawing(true, demoShapes, .5); // smaller scale
+            }, INACTIVITY_DELAY);
+        }
+        window.addEventListener('mousemove', handleCursorActivity);
+        window.addEventListener('touchstart', handleCursorActivity);
+        window.addEventListener('touchmove', handleCursorActivity);
+
+
+
+        document.getElementById('customFileInput').addEventListener('change', async (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                const fileURL = URL.createObjectURL(file);
+                const response = await fetch(fileURL);
+                const content = await response.text();
+                await sparkles.start(content);
+            }
+        });
+    </script>
+  </body>
+</html>
