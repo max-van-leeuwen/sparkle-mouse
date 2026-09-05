@@ -36,7 +36,7 @@
 
 
         // demo shapes when inactive
-        
+
         // get shapes
         import { shapeWilly } from './additionalDemoShapes.js'; // shape not included
         const { shapeHeart, shapeSquiggly, shapeStar, shapeSwirl } = SparkleMouse; // default shapes
@@ -45,12 +45,15 @@
         // start drawing when inactive for a while
         const INACTIVITY_DELAY = 1700; // wait time (ms)
         let inactivityTimeout = null;
+        let customTemplateLoaded = false; // stops demo shapes for good once the user loads their own template
         function handleCursorActivity() {
             if (!sparkles.isStarted) return;
 
             // enable cursor tracking and disable demo drawing
             sparkles.setCursorTracking(true);
             sparkles.setDemoShapesDrawing(false);
+
+            if (customTemplateLoaded) return; // keep demo shapes off when user uploaded their own content
 
             // start new timeout
             if (inactivityTimeout) clearTimeout(inactivityTimeout);
@@ -72,6 +75,12 @@
                 const response = await fetch(fileURL);
                 const content = await response.text();
                 await sparkles.start(content);
+
+                // stop demo shapes immediately, and for good, now that a custom template is active
+                customTemplateLoaded = true;
+                if (inactivityTimeout) clearTimeout(inactivityTimeout);
+                sparkles.setCursorTracking(true);
+                sparkles.setDemoShapesDrawing(false);
             }
         });
     </script>

@@ -40,7 +40,34 @@ body.page-solitaire {
   background: rgba(0, 0, 0, 0.7);
   padding: 15px;
   border-radius: 5px;
-  max-width: 400px;
+  max-width: min(400px, calc(100vw - 20px));
+}
+
+@media (max-width: 480px) {
+  body {
+    font-size: 13px;
+  }
+
+  .info-container {
+    padding: 10px;
+  }
+
+  .info-text h3 {
+    font-size: 15px;
+  }
+
+  .info-text pre {
+    font-size: 10px;
+  }
+
+  .nav-links {
+    gap: 6px;
+  }
+
+  .nav-links a, .nav-links label {
+    font-size: 10px;
+    padding: 3px 8px;
+  }
 }
 
 .info-text {
