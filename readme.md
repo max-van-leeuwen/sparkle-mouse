@@ -36,7 +36,7 @@ Sparkle Mouse brings that nostalgic webcore aesthetic to your desktop or website
 <br><i>(the UI looks like Windows XP :P)</i>
 <br><br>
 
-Your sparkle settings are stored as <i>.sparkle</i> template files! Share them with friends, or use them on web with the included [package](https://github.com/max-van-leeuwen/sparkle-mouse/blob/main/packages/sparkle-mouse/README.md).
+Your sparkle settings are stored as <i>.sparkle</i> template files! Share them with friends between desktops, or use them on a web installation of Sparkle Mouse.
 
 I optimized the particles to run fully on the GPU, even with many different GIFs it runs pretty smooth!
 

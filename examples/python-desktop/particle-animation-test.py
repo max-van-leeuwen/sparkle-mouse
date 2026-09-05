@@ -8,9 +8,7 @@ import time
 import sys
 import requests
 
-# subprocess.Popen(['sparkle-mouse', '--headless']) # start Sparkle Mouse (if not open already)
-# TODO delete next line, uncomment previous! local testing only
-subprocess.Popen(['/Users/max/Desktop/Sparkle Mouse/Project/Git/sparkle-mouse/src-tauri/target/release/sparkle-mouse', '--headless'])
+subprocess.Popen(['sparkle-mouse', '--headless']) # start Sparkle Mouse (if not open already)
 API_URL = 'http://127.0.0.1:58008' # Sparkle Mouse API
 
 SPINNING_VALUES = [0, 1]
