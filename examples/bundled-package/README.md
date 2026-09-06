@@ -1,14 +1,14 @@
 # Sparkle Mouse (JS Bundle)
 
-This package bundles Sparkle Mouse and all its dependencies into a single JS file.
+This JS bundle contains the full Sparkle Mouse renderer!
 
-Perfect for self-hosted sites, like Neocities ([example](https://sparkle-mouse.neocities.org/))!
+Simply add it to your self-hosted website (like [Neocities](https://sparkle-mouse.neocities.org/)).
 
-This bundle is in sync with the latest Sparkle Mouse package on [npm](https://www.npmjs.com/package/sparkle-mouse).
+The bundle is in sync with the latest Sparkle Mouse package on [npm](https://www.npmjs.com/package/sparkle-mouse).
 
 ## How To Use
 
-Grab grab the JS bundle ([sparkle-mouse.bundle.iife.js)](https://github.com/max-van-leeuwen/sparkle-mouse/tree/main/examples/bundled-package/bundled-site-example/sparkle-mouse.bundle.iife.js)) and use this HTML:
+Upload this file to your site: [sparkle-mouse.bundle.iife.js](https://github.com/max-van-leeuwen/sparkle-mouse/tree/main/examples/bundled-package/bundled-site-example/sparkle-mouse.bundle.iife.js) and add the following code to your HTML:
 ```html
 <script src="sparkle-mouse.bundle.iife.js"></script>
 <script>
@@ -28,7 +28,7 @@ Grab grab the JS bundle ([sparkle-mouse.bundle.iife.js)](https://github.com/max-
     });
 
 
-    // to use your own images as sparkles, run this once to download a pre-made template to disk. then load it using start('template.sparkle'). (You may also skip the downloading step and generate them on the fly, but pre-generating reduces loading times for users)
+    // to use your own images/GIFs, use this to download a pre-made template to disk. then upload that, and load it using start('template.sparkle'). (You can skip this downloading step and generate templates on the fly, but pre-generating reduces loading times for users)
     const images = ['./image1.png', './image2.gif']; // (paths or Image objects)
     SparkleMouse.SparkleMouse.createSparkleSettings(images, { ...SparkleMouse.SparkleMouse.defaultSparkle, amount: 0.5, life: 1 }, true);
 
@@ -36,11 +36,10 @@ Grab grab the JS bundle ([sparkle-mouse.bundle.iife.js)](https://github.com/max-
     // https://www.npmjs.com/package/sparkle-mouse
 </script>
 ```
-Calling `start()` multiple times just restarts with the latest settings.
-
-`createSparkleSettings` processes images on every page load, which is slow. Call it once with `downloadNow: true` as the third argument to save the result as a `.sparkle` file, then load that file directly with `sparkles.start('./template.sparkle')` instead.
 
 ## Building
+
+If you want to re-build this JS bundle, follow the instructions below.
 
 Install dependencies:
 ```bash
@@ -53,4 +52,4 @@ Build the bundle:
 npm run build
 ```
 
-This will create `bundled-site-example/sparkle-mouse.bundle.iife.js`.
+This will create [`bundled-site-example/sparkle-mouse.bundle.iife.js`](https://github.com/max-van-leeuwen/sparkle-mouse/tree/main/examples/bundled-package/bundled-site-example/sparkle-mouse.bundle.iife.js).
