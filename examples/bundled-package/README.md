@@ -2,7 +2,9 @@
 
 This package bundles Sparkle Mouse and all its dependencies into a single JS file.
 
-Perfect for self-hosted sites, like Neocities!
+Perfect for self-hosted sites, like Neocities ([example](https://sparkle-mouse.neocities.org/))!
+
+This bundle is in sync with the latest Sparkle Mouse package on [npm](https://www.npmjs.com/package/sparkle-mouse).
 
 ## How To Use
 
@@ -43,6 +45,7 @@ Calling `start()` multiple times just restarts with the latest settings.
 Install dependencies:
 ```bash
 npm install
+npm update sparkle-mouse
 ```
 
 Build the bundle:
