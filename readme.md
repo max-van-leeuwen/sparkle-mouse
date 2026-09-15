@@ -16,7 +16,7 @@ GPU optimized sparkles for Windows + Mac + Web
 
 [![Website](https://img.shields.io/badge/Website-sparklemou.se-blue)](https://www.sparklemou.se)
 
-<br><b>Video!</b><br>
+<br><b>[Video (youtube)!](https://www.youtube.com/watch?v=I9LLf8ShzNA)</b><br>
 [![Sparkle Mouse Demo](https://img.youtube.com/vi/I9LLf8ShzNA/hqdefault.jpg)](https://www.youtube.com/watch?v=I9LLf8ShzNA)
 
 </div>
