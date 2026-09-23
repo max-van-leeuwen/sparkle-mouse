@@ -64,7 +64,9 @@
 
 
 
-        document.getElementById('customFileInput').addEventListener('change', async (e) => {
+        // delegated: the file input lives in info-container.html, which may be injected after this script runs
+        document.addEventListener('change', async (e) => {
+            if (e.target.id !== 'customFileInput') return;
             const file = e.target.files[0];
             if (file) {
                 const fileURL = URL.createObjectURL(file);
