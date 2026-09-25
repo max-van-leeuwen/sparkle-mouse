@@ -28,9 +28,11 @@
         // --- start Sparkle Mouse with custom .sparkle file
 
         const sparkles = new SparkleMouse.SparkleMouse();
-        sparkles.start('./toomanysparkles.sparkle').catch(err => {
-            console.error('Failed to load sparkles:', err);
-        });
+        sparkles.start('./toomanysparkles.sparkle')
+            .then(startDemoShapes) // draw demo shapes right away, until the cursor moves
+            .catch(err => {
+                console.error('Failed to load sparkles:', err);
+            });
 
 
 
@@ -53,10 +55,11 @@
 
             // start new timeout
             if (inactivityTimeout) clearTimeout(inactivityTimeout);
-            inactivityTimeout = setTimeout(() => {
-                sparkles.setCursorTracking(false);
-                sparkles.setDemoShapesDrawing(true, demoShapes, 1); // smaller scale
-            }, INACTIVITY_DELAY);
+            inactivityTimeout = setTimeout(startDemoShapes, INACTIVITY_DELAY);
+        }
+        function startDemoShapes() {
+            sparkles.setCursorTracking(false);
+            sparkles.setDemoShapesDrawing(true, demoShapes, 1); // smaller scale
         }
         window.addEventListener('mousemove', handleCursorActivity);
         window.addEventListener('touchstart', handleCursorActivity);

@@ -33,54 +33,30 @@ body.page-solitaire {
 }
 
 .info-container {
+  --px: min(1px, calc(50vw / 430)); /* 1px, shrinks so the box never exceeds half the viewport */
   position: fixed;
   top: 10px;
   left: 10px;
   z-index: 100000;
   background: rgba(0, 0, 0, 0.7);
-  padding: 15px;
-  border-radius: 5px;
-  max-width: min(400px, calc(100vw - 20px));
-}
-
-@media (max-width: 480px) {
-  body {
-    font-size: 13px;
-  }
-
-  .info-container {
-    padding: 10px;
-  }
-
-  .info-text h3 {
-    font-size: 15px;
-  }
-
-  .info-text pre {
-    font-size: 10px;
-  }
-
-  .nav-links {
-    gap: 6px;
-  }
-
-  .nav-links a, .nav-links label {
-    font-size: 10px;
-    padding: 3px 8px;
-  }
+  padding: calc(15 * var(--px));
+  border-radius: calc(5 * var(--px));
+  box-sizing: border-box;
+  width: calc(430 * var(--px));
+  font-size: calc(14 * var(--px));
 }
 
 .info-text {
-  margin-bottom: 10px;
+  margin-bottom: calc(10 * var(--px));
 }
 
 .info-text h3 {
-  margin: 0 0 10px 0;
-  font-size: 16px;
+  margin: 0 0 calc(10 * var(--px)) 0;
+  font-size: calc(16 * var(--px));
 }
 
 .info-text p {
-  margin: 5px 0;
+  margin: calc(5 * var(--px)) 0;
 }
 
 a {
@@ -95,28 +71,28 @@ a:hover {
 
 .info-text pre {
   background: rgba(0, 0, 0, 0.5);
-  padding: 8px;
-  border-radius: 3px;
+  padding: calc(8 * var(--px));
+  border-radius: calc(3 * var(--px));
   font-family: 'Courier New', monospace;
-  font-size: 11px;
+  font-size: calc(11 * var(--px));
   overflow-x: auto;
-  margin: 8px 0;
+  margin: calc(8 * var(--px)) 0;
 }
 
 .nav-links {
   display: flex;
-  gap: 10px;
-  margin-bottom: 12px;
+  gap: calc(10 * var(--px));
+  margin-bottom: calc(12 * var(--px));
 }
 
 .nav-links a, .nav-links label {
   color: #000;
   text-decoration: none;
   background: linear-gradient(to bottom, #fff 0%, #ece9d8 100%);
-  padding: 3px 12px;
-  border-radius: 3px;
+  padding: calc(3 * var(--px)) calc(12 * var(--px));
+  border-radius: calc(3 * var(--px));
   font-family: Tahoma, Arial, sans-serif;
-  font-size: 11px;
+  font-size: calc(11 * var(--px));
   border: 1px solid #aca899;
   border-top-color: #fff;
   border-left-color: #fff;
@@ -131,6 +107,21 @@ a:hover {
 .nav-links a:active, .nav-links label:active {
   background: linear-gradient(to bottom, #e3ddc6 0%, #fff 100%);
   box-shadow: inset 0 1px 2px rgba(0,0,0,0.2);
+}
+
+.nav-links a {
+  animation: nav-bounce 1.2s ease-in-out infinite;
+}
+
+/* stagger so the bounce ripples across the buttons */
+.nav-links a:nth-child(2) { animation-delay: 0.15s; }
+.nav-links a:nth-child(3) { animation-delay: 0.3s; }
+
+@keyframes nav-bounce {
+  0%, 66.7%, 100% { transform: scale(1); }
+  16.7% { transform: scale(1.12); }
+  33.3% { transform: scale(0.96); }
+  50%   { transform: scale(1.03); }
 }
 
 .custom-file-label {
