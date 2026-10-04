@@ -17,7 +17,7 @@ GPU optimized sparkles for Windows + Mac + Web
 [![Website](https://img.shields.io/badge/Website-sparklemou.se-blue)](https://www.sparklemou.se)
 
 <br><b>[Video (youtube)!](https://www.youtube.com/watch?v=I9LLf8ShzNA)</b><br>
-[![Sparkle Mouse Demo](https://img.youtube.com/vi/I9LLf8ShzNA/hqdefault.jpg)](https://www.youtube.com/watch?v=I9LLf8ShzNA)
+<a href="https://www.youtube.com/watch?v=I9LLf8ShzNA"><img src="https://img.youtube.com/vi/I9LLf8ShzNA/hqdefault.jpg" alt="Sparkle Mouse Demo" width="160"/></a>
 
 </div>
 
@@ -25,7 +25,11 @@ GPU optimized sparkles for Windows + Mac + Web
 
 - The desktop app is open-source. Please buy the installer ([itch.io](https://maxvanleeuwen.itch.io/sparkle-mouse)) to support development! Thank you :)
 
-![Flowers 2](readme-media/flowers-2.gif)
+<br>
+
+<div align="center">
+<img src="readme-media/flowers-2.gif" alt="Flowers 2" width="400"/>
+</div>
 
 <br>
 
@@ -44,23 +48,23 @@ I optimized the particles to run fully on the GPU, even with many different GIFs
 
 <br>
 
-![Flowers](readme-media/flowers.gif)
-<i>Flower GIFs from GeoCities are playing on each particle, download this template [here](https://maxvanleeuwen.itch.io/webcore-fish-sparkle-template)!</i>
+<img src="readme-media/flowers.gif" alt="Flowers" width="400"/>
+<br><br><i>Flower GIFs from GeoCities are playing on each particle, download this template <a href="https://maxvanleeuwen.itch.io/webcore-fish-sparkle-template">here</a>!</i>
 
-![Rainbow](readme-media/rainbow.gif)
-<i>Custom images and settings can make particles look like anything.</i>
+<img src="readme-media/rainbow.gif" alt="Rainbow" width="400"/>
+<br><i>Custom images and settings can make particles look like anything.</i>
 
 <br>
 
 The desktop app can be controlled through HTTP API and CLI (get started: `sparkle-mouse -h`) in case you want to connect it to your own apps or scripts. 
 
-![Command-Line Interface](readme-media/sparkle-mouse-cli.gif)
+<img src="readme-media/sparkle-mouse-cli.gif" alt="Command-Line Interface" width="400"/>
 
 For example, run `sparkle-mouse --headless template.sparkle` to start the app with a template file, without showing the UI.
 
 <br>
 
-![Custom shapes drawing](readme-media/manual-drawing.gif)
+<img src="readme-media/manual-drawing.gif" alt="Custom shapes drawing" width="400"/>
 
 See [this](https://github.com/max-van-leeuwen/sparkle-mouse/tree/main/examples) python example to learn how to draw shapes, using the HTTP API.
 <br>
@@ -71,7 +75,7 @@ See [this](https://github.com/max-van-leeuwen/sparkle-mouse/tree/main/examples) 
 
 <br> 
 
-![.Sparkle File](readme-media/sparkle-file.jpg)
+<img src="readme-media/sparkle-file.jpg" alt=".Sparkle File" width="400"/>
 
 <br>
 These are templates! Containing all sparkle settings.
