@@ -49,12 +49,17 @@ I optimized the particles to run fully on the GPU, even with many different GIFs
 
 <br>
 
+<p>
 <img src="readme-media/flowers.gif" alt="Flowers" width="400"/>
 <br><i>Flower GIFs from GeoCities are playing on each particle, download this template <a href="https://maxvanleeuwen.itch.io/webcore-fish-sparkle-template">here</a>!</i>
+</p>
 
 <br>
+
+<p>
 <img src="readme-media/rainbow.gif" alt="Rainbow" width="400"/>
 <br><i>Custom images and settings can make particles look like anything.</i>
+</p>
 
 <br><br>
 
