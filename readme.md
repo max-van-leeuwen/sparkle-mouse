@@ -21,9 +21,11 @@ GPU optimized sparkles for Windows + Mac + Web
 
 </div>
 
-- The sparkle-mouse JS package is 100% free. Use it on your website!
+- The sparkle-mouse [JS package](https://github.com/max-van-leeuwen/sparkle-mouse/tree/main/examples/bundled-package) is 100% free. Use it on your website! [Here's](https://sparkle-mouse.neocities.org) a live example.
 
-- The desktop app is open-source. Please buy the installer from [itch.io](https://maxvanleeuwen.itch.io/sparkle-mouse) to support development! Thank you :)
+- The desktop app is open-source. Please buy the installer ([itch.io](https://maxvanleeuwen.itch.io/sparkle-mouse)) to support development! Thank you :)
+
+![Flowers 2](readme-media/flowers-2.gif)
 
 <br>
 
@@ -43,7 +45,10 @@ I optimized the particles to run fully on the GPU, even with many different GIFs
 <br>
 
 ![Flowers](readme-media/flowers.gif)
-<i>Flower GIFs from GeoCities are playing on each particle, get the template [here](https://maxvanleeuwen.itch.io/webcore-fish-sparkle-template)!</i>
+<i>Flower GIFs from GeoCities are playing on each particle, download this template [here](https://maxvanleeuwen.itch.io/webcore-fish-sparkle-template)!</i>
+
+![Rainbow](readme-media/rainbow.gif)
+<i>Custom images and settings can make particles look like anything.</i>
 
 <br>
 
@@ -91,7 +96,7 @@ This repo contains:
     yarn add sparkle-mouse
     pnpm add sparkle-mouse
     ```
-3. The [bundled package](https://github.com/max-van-leeuwen/sparkle-mouse/tree/main/examples/bundled-package), for self-hosted sites like Neocities!
+3. The [bundled package](https://github.com/max-van-leeuwen/sparkle-mouse/tree/main/examples/bundled-package), for self-hosted sites like [Neocities](https://sparkle-mouse.neocities.org)!
 
 <br>
 
@@ -106,7 +111,7 @@ npm run build:macnotarized
 # windows
 npm run build:win
 
-# linux
+# linux (not currently working)
 npm run build:linux
 
 # these automatically generate attribution.txt
@@ -162,3 +167,9 @@ gnome-extensions enable appindicatorsupport@rgcjonas.gmail.com
 
 ## Support this project
 If you like this project and want to support it, please consider buying the [executable](https://maxvanleeuwen.itch.io/sparkle-mouse) or [donating](https://ko-fi.com/maxvanleeuwen)! :)
+
+
+<br>
+<br>
+
+![Cursors](readme-media/cursors.gif)
