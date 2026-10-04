@@ -39,7 +39,8 @@ Sparkle Mouse brings that nostalgic webcore aesthetic to your desktop or website
 
 <br>
 <img src="readme-media/UI.gif" height="400" style="image-rendering: pixelated;"/>
-<br><i>(the UI looks like Windows XP :P)</i>
+
+<i>(the UI looks like Windows XP :P)</i>
 <br><br>
 
 Your sparkle settings are stored as <i>.sparkle</i> template files! Share them with friends between desktops, or use them on a web installation of Sparkle Mouse.
@@ -49,12 +50,13 @@ I optimized the particles to run fully on the GPU, even with many different GIFs
 <br>
 
 <img src="readme-media/flowers.gif" alt="Flowers" width="400"/>
-<br><br><i>Flower GIFs from GeoCities are playing on each particle, download this template <a href="https://maxvanleeuwen.itch.io/webcore-fish-sparkle-template">here</a>!</i>
+<br><i>Flower GIFs from GeoCities are playing on each particle, download this template <a href="https://maxvanleeuwen.itch.io/webcore-fish-sparkle-template">here</a>!</i>
 
+<br>
 <img src="readme-media/rainbow.gif" alt="Rainbow" width="400"/>
 <br><i>Custom images and settings can make particles look like anything.</i>
 
-<br>
+<br><br>
 
 The desktop app can be controlled through HTTP API and CLI (get started: `sparkle-mouse -h`) in case you want to connect it to your own apps or scripts. 
 
