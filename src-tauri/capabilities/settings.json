@@ -1,0 +1,45 @@
+{
+  "$schema": "../gen/schemas/desktop-schema.json",
+  "identifier": "settings",
+  "description": "Capability for the settings window",
+  "windows": ["settings"],
+  "permissions": [
+    "core:default",
+    "core:window:allow-set-size",
+    "core:window:allow-set-position",
+    "core:window:allow-set-resizable",
+    "core:window:allow-center",
+    "core:window:allow-close",
+    "core:window:allow-hide",
+    "core:window:allow-show",
+    "core:window:allow-start-dragging",
+    "core:window:allow-set-focus",
+    "core:window:allow-set-always-on-top",
+    "shell:allow-open",
+    "fs:allow-exists",
+    "fs:allow-mkdir",
+    "fs:allow-appdata-write",
+    "fs:allow-appdata-read",
+    "fs:allow-appdata-read-recursive",
+    "fs:allow-appdata-write-recursive",
+    "fs:scope-appdata-recursive",
+    "fs:allow-read-file",
+    {
+      "identifier": "fs:scope",
+      "allow": [
+        { "path": "/**/*.sparkle" },
+        { "path": "/**/*.png" },
+        { "path": "/**/*.jpg" },
+        { "path": "/**/*.jpeg" },
+        { "path": "/**/*.bmp" },
+        { "path": "/**/*.gif" }
+      ]
+    },
+    "core:path:allow-resolve-directory",
+    "core:path:allow-dirname",
+    "dialog:allow-open",
+    "autostart:allow-enable",
+    "autostart:allow-disable",
+    "autostart:allow-is-enabled"
+  ]
+}

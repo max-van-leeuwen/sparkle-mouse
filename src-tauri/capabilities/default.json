@@ -1,0 +1,38 @@
+{
+  "$schema": "../gen/schemas/desktop-schema.json",
+  "identifier": "default",
+  "description": "Capability for the main window",
+  "windows": ["main"],
+  "permissions": [
+    "core:default",
+    "opener:default",
+    "deep-link:default",
+    "core:window:allow-set-size",
+    "core:window:allow-set-position",
+    "core:window:allow-set-focus",
+    "fs:allow-exists",
+    "fs:allow-mkdir",
+    "fs:allow-appdata-write",
+    "fs:allow-appdata-read",
+    "fs:allow-appdata-read-recursive",
+    "fs:allow-appdata-write-recursive",
+    "fs:scope-appdata-recursive",
+    "fs:allow-read-file",
+    {
+      "identifier": "fs:scope",
+      "allow": [
+        { "path": "/**/*.sparkle" },
+        { "path": "/**/*.png" },
+        { "path": "/**/*.jpg" },
+        { "path": "/**/*.jpeg" },
+        { "path": "/**/*.bmp" },
+        { "path": "/**/*.gif" }
+      ]
+    },
+    "core:path:allow-resolve-directory",
+    "core:path:allow-dirname",
+    "global-shortcut:allow-register",
+    "global-shortcut:allow-unregister",
+    "global-shortcut:allow-is-registered"
+  ]
+}

@@ -1,0 +1,62 @@
+{
+  "name": "sparkle-mouse",
+  "version": "1.1.3",
+  "description": "Custom particle trails ✨",
+  "homepage": "https://sparklemou.se",
+  "type": "module",
+  "funding": {
+    "type": "individual",
+    "url": "https://ko-fi.com/maxvanleeuwen"
+  },
+  "bugs": {
+    "url": "https://github.com/max-van-leeuwen/sparkle-mouse/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/max-van-leeuwen/sparkle-mouse.git",
+    "directory": "packages/sparkle-mouse"
+  },
+  "main": "dist/index.js",
+  "exports": {
+    ".": "./dist/index.js",
+    "./cursor": "./dist/cursor.js",
+    "./demo": "./dist/demo.js",
+    "./shapes": "./dist/shapes.js",
+    "./helpers": "./dist/helpers.js",
+    "./main": "./dist/main.js",
+    "./renderer": "./dist/renderer.js",
+    "./scene": "./dist/scene.js",
+    "./spritesheet": "./dist/spritesheet.js",
+    "./logger": "./dist/logger.js"
+  },
+  "files": [
+    "dist/",
+    "LICENSE.txt",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "vite build",
+    "prepublishOnly": "npm run build",
+    "test": "echo \"No tests yet\""
+  },
+  "keywords": [
+    "particles",
+    "webgl",
+    "threejs",
+    "cursor",
+    "effects",
+    "cute"
+  ],
+  "author": "Max van Leeuwen",
+  "license": "MIT",
+  "peerDependencies": {
+    "three": ">=0.150.0"
+  },
+  "dependencies": {
+    "omggif": "^1.0.10",
+    "upng-js": "^2.1.0"
+  },
+  "devDependencies": {
+    "vite": "^7.1.7"
+  }
+}

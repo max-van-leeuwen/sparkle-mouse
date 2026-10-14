@@ -1,0 +1,50 @@
+{
+  "name": "sparkle-mouse",
+  "private": true,
+  "version": "1.0.12",
+  "license": "MIT",
+  "author": "Max van Leeuwen",
+  "type": "module",
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "set-version": "node scripts/update-version.js",
+    "vite:build-dev": "npx dotenv-cli -e config.env -- vite build --mode development",
+    "vite:build": "npx dotenv-cli -e config.env -- vite build --mode production",
+    "vite:build-ci": "npx dotenv-cli -e config.env -- vite build --mode production",
+    "tauri": "npx dotenv-cli -e config.env -- tauri",
+    "tauri:dev": "npx dotenv-cli -e config.env -- tauri dev",
+    "tauri:build": "npx dotenv-cli -e config.env -- tauri build",
+    "clean": "rm -rf src-tauri/target/debug src-tauri/target/release node_modules dist && npm install",
+    "test": "sh -c 'if [ -f /etc/debian_version ] || [ -f /etc/redhat-release ]; then ./scripts/linux-prepare.sh npm run tauri:dev; else npm run tauri:dev; fi'",
+    "test:headless": "SPARKLE_HEADLESS=1 npm run test",
+    "build:mac": "npx dotenv-cli -e config.env -- sh -c \"./scripts/generate-attribution.sh && npm run vite:build && npm run tauri:build && ./scripts/set-plist-icon.sh && ./scripts/rebuild-dmg.sh && ./scripts/set-dmg-icon.sh\"",
+    "build:macnotarized": "npx dotenv-cli -e config.env -- sh -c \"./scripts/generate-attribution.sh && npm run vite:build && npm run tauri:build && ./scripts/set-plist-icon.sh\" && npx dotenv-cli -e config.env -e .env.signing -- sh -c \"./scripts/sign-notarize-app.sh && ./scripts/rebuild-dmg.sh && ./scripts/set-dmg-icon.sh && ./scripts/sign-notarize-dmg.sh\"",
+    "build:win": "bash ./scripts/generate-attribution.sh && npm run vite:build && npm run tauri:build",
+    "build:linux": "./scripts/linux-prepare.sh bash -c './scripts/generate-attribution.sh && npm run vite:build && npm run tauri:build'"
+  },
+  "devDependencies": {
+    "@tauri-apps/cli": "^2",
+    "cross-env": "^10.1.0",
+    "dotenv-cli": "^11.0.0",
+    "glsl-minifier": "^0.0.12",
+    "license-checker": "^25.0.1",
+    "vite": "^7.1.7",
+    "vite-plugin-glsl": "^1.5.4",
+    "vite-plugin-html": "^3.2.2",
+    "vite-plugin-javascript-obfuscator": "^3.1.0"
+  },
+  "dependencies": {
+    "@tauri-apps/api": "~2.8.0",
+    "@tauri-apps/plugin-deep-link": "^2.4.5",
+    "@tauri-apps/plugin-dialog": "^2.4.0",
+    "@tauri-apps/plugin-fs": "^2.4.2",
+    "@tauri-apps/plugin-store": "^2.4.0",
+    "omggif": "^1.0.10",
+    "sparkle-mouse": "workspace:*",
+    "three": "^0.180.0",
+    "upng-js": "^2.1.0",
+    "xp.css": "^0.2.6"
+  }
+}

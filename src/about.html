@@ -1,0 +1,265 @@
+<!-- about page layout -->
+ 
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>About</title>
+     <script type="module" src="./about.js"></script>
+    <style>
+        html {
+            font-size: 16px;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        
+        body {
+            margin: 0;
+            font-size: 16px;
+            display: flex;
+            overflow: hidden; /* no scrollbars */
+            user-select: none;
+            opacity: 0;
+        }
+        /* prevent text selection and dragging */
+        * {
+            user-select: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            cursor: default !important;
+            -webkit-user-drag: none;
+            -khtml-user-drag: none;
+            -moz-user-drag: none;
+            -o-user-drag: none;
+        }
+        /* pointer cursor for hyperlinks */
+        a {
+            cursor: pointer !important;
+        }
+        .window {
+            border-radius: 0;
+            box-sizing: border-box;
+            margin: 0;
+            transform-origin: top left;
+        }
+
+        .status-bar-field {
+            font-size: 0.6875rem;
+        }
+
+        .title-bar-controls button {
+            transition: none !important;
+        }
+        .title-bar-controls button:hover {
+            transition: none !important;
+        }
+
+        /* inactive title bar grayish color */
+        .title-bar.inactive {
+            filter: contrast(.6) saturate(0.35) brightness(1.4) !important;
+        }
+        .title-bar.inactive .title-bar-text {
+            filter:opacity(.5) !important;
+            text-shadow: none !important;
+        }
+        .window.inactive {
+            box-shadow: inset 3px 3px #7a8ad5, inset -3px -3px #7a8ad5 !important;
+        }
+      
+        /* remove outline when button is pressed */
+        button:active {
+            box-shadow: none !important;
+        }
+        
+        /* prevent emojis from changing select option height */
+        select, select option {
+            line-height: 1.2 !important;
+            font-size: inherit !important;
+        }
+
+        /* fix template selector width */
+        #template-select {
+            width: 120px;
+            max-width: 120px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        legend {
+            font-family: "Pixelated MS Sans Serif", Arial, sans-serif;
+        }
+
+        .window, .window * {
+            font-family: "Pixelated MS Sans Serif", Arial, sans-serif;
+        }
+
+        /* force XP scrollbar */
+        .sunken-panel {
+            scrollbar-width: auto !important;
+            scrollbar-color: auto !important;
+        }
+        
+        .sunken-panel::-webkit-scrollbar {
+            width: 16px !important;
+            height: 16px !important;
+        }
+
+        .tooltip {
+            position: relative;
+        }
+
+        .tooltip[data-tooltip] {
+            cursor: help;
+        }
+
+        .tooltip[data-tooltip]:not([data-tooltip=""])::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            bottom: 125%;
+            left: 50%;
+            transform: translateX(clamp(-50% + 5px, -50%, -50% - 5px));
+            background-color: #ffffe1;
+            color: #000;
+            padding: 3px 5px;
+            border: 1px solid #000;
+            border-radius: 0;
+            font-size: 0.6875rem;
+            font-family: "Pixelated MS Sans Serif", sans-serif;
+            white-space: pre-line;
+            min-width: 80px;
+            max-width: 200px;
+            opacity: 0;
+            visibility: hidden;
+            z-index: 1000;
+            box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            transition: opacity 0.2s ease, visibility 0.2s ease;
+            transition-delay: 0s;
+            pointer-events: none;
+        }
+
+        .tooltip[data-tooltip]:not([data-tooltip=""]):hover::after {
+            opacity: 1;
+            visibility: visible;
+            transition-delay: .3s;
+        }
+
+        .okButton {
+            border: 1px solid #003c74; 
+            background: linear-gradient(180deg,#fff,#ecebe5 86%,#d8d0c4);
+            border-radius: 3px;
+            outline: 1px dotted #000;
+            outline-offset: -4px;
+            box-shadow: inset -1px 1px #cee7ff,inset 1px 2px #98b8ea,inset -2px 2px #bcd4f6,inset 1px -1px #89ade4,inset 2px -2px #89ade4;
+        }
+        .okButton:focus {
+            border: 1px solid #000000; 
+            box-shadow: 
+                inset -1px 1px #cee7ff, inset 1px 2px #98b8ea, inset -2px 2px #bcd4f6, inset 1px -1px #89ade4, inset 2px -2px #89ade4, 
+                0 0 0 3px #cee7ff,
+                0 0 0 4px #003c74;
+            outline: none;
+        }
+
+        .bullet-item {
+            padding-left: 1.2em;
+            text-indent: -1.2em;
+            margin-bottom: 0.5em;
+        }
+
+        .demoButton {
+            text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.8);
+        }
+
+    </style>
+  </head>
+  <body>
+    <div class="window" style="width: 300px">
+        
+        <!-- title bar -->
+        <div class="title-bar">
+            <div class="title-bar-text">About</div>
+            <div class="title-bar-controls">
+                <button aria-label="Close" id="close-btn"></button>
+            </div>
+        </div>
+
+
+        <div class="window-body">
+
+            <div class="sunken-panel" style="padding: 8px; height: 200px; overflow: auto; margin-bottom: 12px;">
+                <div style="display: flex; gap: 24px; align-items: flex-start;">
+                    <div style="text-align: center; flex-shrink: 0; width: 80px;">
+                        <img id="app-icon" src="./assets/UI/sparkles-BW.png" style="display: block; margin: 0 auto; width: 50px; height: 50px;" draggable="false">
+                        <h3 style="margin: 0; font-size: 0.6875rem; white-space: normal;">Sparkle Mouse</h3>
+                        <small><span id="app-version"></span></small>
+                        <br><br>
+                        <small>
+                        By<br><a href="https://www.sparklemou.se/about-max">Max van Leeuwen</a>
+                        <br><br>
+                        <button class="demoButton"><span style="color:#FF0000;animation-delay:0s">c</span><span style="color:#FFBF00;animation-delay:0.075s">o</span><span style="color:#80FF00;animation-delay:0.15s">o</span><span style="color:#00FF40;animation-delay:0.225s">l</span> <span style="color:#00FFFF;animation-delay:0.3s">d</span><span style="color:#0040FF;animation-delay:0.375s">e</span><span style="color:#7F00FF;animation-delay:0.45s">m</span><span style="color:#FF00BF;animation-delay:0.525s">o</span></button>
+                        <br><br><br>
+                        </small>
+                        <span id="donate-link"><a href="__PROJECT_URL__/support">Donate</a> 🐁❤️</span>
+                    </div>
+                    <div style="flex: 1; min-width: 0;">
+                        <b>Fun Facts:</b>
+                        <br><br>
+                        <div class="bullet-item">✧ <a style="white-space: nowrap;" href="__PROJECT_URL__/open-source">Open-Source</a>! Add me to your website!</div>
+                        <div class="bullet-item">✧ <a href="__PROJECT_URL__/templates">Download</a> templates and updates</div>
+                        <div class="bullet-item">✧ Control with HTTP API and Command-Line. Try in CLI: <i style="white-space: nowrap;">sparkle-mouse -h</i></div>
+                        <br>
+                        <b>Many Thanks To:</b>
+                        <small>
+                        <br><br>
+                        <b><i>Templates & Illustrations</i></b><br>
+                        <a href="https://www.sparklemou.se/about-livi-wilmore">Livi Wilmore</a> (Logo)<br>
+                        <a href="https://www.sparklemou.se/about-ines-hilz">Ines Hilz</a> (Templates)<br>
+                        <a href="https://www.sparklemou.se/about-amandaisonadventure/">amandaisonadventure</a> (Templates)<br>
+                        <br><br>
+
+                        <b><i>Tauri 2.0 (MIT)</i></b><br>
+                        <a href="https://github.com/tauri-apps/tauri">Github</a><br>
+                        The Tauri Team and Contributors
+                        <br><br>
+                        <b><i>Three.JS (MIT)</i></b><br>
+                        <a href="https://github.com/mrdoob/three.js/">Github</a><br>
+                        Ricardo Cabello (Mr.doob)<br>Three.js Team and Contributors
+                        <br><br>
+                        <b><i>XP.css (MIT)</i></b><br>
+                        <a href="https://botoxparty.github.io/XP.css/">Github</a><br>
+                        Adam Hammad
+                        Jordan Scales
+                        <br><br>
+                        <b><i>omggif (MIT)</i></b><br>
+                        <a href="https://github.com/deanm/omggif">Github</a><br>
+                        Dean McNamee
+                        <br><br>
+                        <b><i>UPNG.js (MIT)</i></b><br>
+                        <a href="https://github.com/photopea/UPNG.js">Github</a><br>
+                        Photopea
+                        <br><br>
+                        <b><i>Noto Emoji Font (OFL 1.1)</i></b><br>
+                        <a href="https://github.com/googlefonts/noto-emoji">Github</a><br>
+                        Google
+                        <br><br>
+                        <b><i>ASCII Art Generator</i></b><br>
+                        <a href="https://patorjk.com">patorjk.com</a><br>
+                        Pat or JK
+                        <br><br>
+                        <b><i>See attribution.txt.</i></b>
+                        </small>
+                    </div>
+                </div>
+            </div>
+
+            <!-- <div style="height: 30px;"></div> -->
+            <div style="display: flex; justify-content: center; align-items: right;">
+                <button class="okButton">OK</button>
+            </div>
+
+        </div>
+    </div>
+  </body>
+</html>

@@ -5,9 +5,6 @@
 <br><br>
 
 
-# ✨ Coming soon! ✨
-
-
 # Sparkle Mouse
 ### Cute Customizable Particles! 🐁✨
 GPU optimized sparkles for Windows + Mac + Web

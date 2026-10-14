@@ -1,0 +1,663 @@
+<!-- Max van Leeuwen -->
+<!-- settings window layout -->
+ 
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Settings</title>
+     <script type="module" src="./settings.js"></script>
+    <style>
+        html {
+            font-size: 16px;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        
+        body {
+            margin: 0;
+            font-size: 16px;
+            display: flex;
+            overflow: hidden; /* no scrollbars */
+            user-select: none;
+            opacity: 0; /* start hidden, will be set to 1 after initialization in JS */
+        }
+        /* no text selection or dragging */
+        * {
+            user-select: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            cursor: default !important;
+            -webkit-user-drag: none;
+            -khtml-user-drag: none;
+            -moz-user-drag: none;
+            -o-user-drag: none;
+        }
+        /* pointer cursor for hyperlinks */
+        a {
+            cursor: pointer !important;
+        }
+        .window {
+            border-radius: 0;
+            box-sizing: border-box;
+            margin: 0;
+            transform-origin: top left;
+        }
+
+        .status-bar-field {
+            font-size: 0.6875rem;
+        }
+
+        .title-bar-controls button {
+            transition: none !important;
+        }
+        .title-bar-controls button:hover {
+            transition: none !important;
+        }
+
+        /* inactive title bar grayish color */
+        .title-bar.inactive {
+            filter: contrast(.6) saturate(0.35) brightness(1.4) !important;
+        }
+        .title-bar.inactive .title-bar-text {
+            filter:opacity(.5) !important;
+            text-shadow: none !important;
+        }
+        
+        .title-bar-icon {
+            filter: drop-shadow(1px 1px 0px rgba(0,0,0,0.4));
+        }
+        .title-bar.inactive .title-bar-icon {
+            filter: none;
+        }
+        .window.inactive {
+            box-shadow: inset 3px 3px #7a8ad5, inset -3px -3px #7a8ad5 !important;
+        }
+        
+        button:active {
+            box-shadow: none !important;
+        }
+        
+        /* prevent emojis from changing select option height */
+        select, select option {
+            line-height: 1.2 !important;
+            font-size: inherit !important;
+        }
+
+        #template-select {
+            width: 120px;
+            max-width: 120px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        #monitor-select {
+            width: 120px;
+            max-width: 120px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        /* make save button text half transparent when disabled */
+        #save-template-btn:disabled, #delete-template-btn:disabled {
+            opacity: 0.5;
+        }
+
+        .window, .window * {
+            font-family: "Pixelated MS Sans Serif", Arial, sans-serif;
+        }
+
+        legend {
+            font-family: "Pixelated MS Sans Serif", Arial, sans-serif;
+        }
+
+        /* tab panels not interfering with tooltips */
+        article[role="tabpanel"] {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* add center line to gravity slider */
+        #gravity {
+            position: relative;
+        }
+        
+        #gravity-marker {
+            content: '';
+            position: absolute;
+            top: calc(50% + 19px);
+            transform: translate(-50%, -50%);
+            width: 1px;
+            height: 5px;
+            background-color: #818181;
+            pointer-events: auto;
+            cursor: pointer;
+            z-index: 2;
+        }
+        
+        #gravity-marker::before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            width: 10px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        /* line indicator for radius slider */
+        #radius-marker {
+            content: '';
+            position: absolute;
+            top: calc(50% + 19px);
+            transform: translate(-50%, -50%);
+            width: 1px;
+            height: 5px;
+            background-color: #000;
+            pointer-events: auto;
+            cursor: pointer;
+            z-index: 2;
+        }
+        
+        #radius-marker::before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            width: 10px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        /* line indicator for speed slider (GIF native speed, average when multiple selected) */
+        #speed-marker {
+            content: '';
+            position: absolute;
+            top: calc(50% + 15px);
+            transform: translate(-50%, -50%);
+            width: 1px;
+            height: 5px;
+            background-color: #000;
+            pointer-events: auto;
+            cursor: pointer;
+            z-index: 2;
+        }
+        
+        #speed-marker::before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            width: 10px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        .tooltip {
+            position: relative;
+            --mouse-x: 0px;
+            --mouse-y: 0px;
+            z-index: 100000;
+        }
+
+        .tooltip[data-tooltip] {
+            cursor: help;
+        }
+
+        /* override cursor for clickable markers */
+        #speed-marker[data-tooltip],
+        #gravity-marker[data-tooltip],
+        #radius-marker[data-tooltip] {
+            cursor: pointer !important;
+        }
+        
+        #speed-marker::before,
+        #gravity-marker::before,
+        #radius-marker::before {
+            cursor: pointer !important;
+        }
+
+        .tooltip[data-tooltip]:not([data-tooltip=""])::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            left: var(--mouse-x);
+            top: var(--mouse-y);
+            transform: translate(-50%, calc(-100% - 10px));
+            background-color: #ffffe1;
+            color: #000;
+            padding: 3px 5px;
+            border: 1px solid #000;
+            border-radius: 0;
+            font-size: 0.6875rem;
+            font-family: "Pixelated MS Sans Serif", sans-serif;
+            white-space: pre-line;
+            min-width: 80px;
+            max-width: 200px;
+            opacity: 0;
+            visibility: hidden;
+            z-index: 99999;
+            box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            transition: opacity 0.2s ease, visibility 0.2s ease;
+            transition-delay: 0s;
+            pointer-events: none;
+        }
+
+        /* checkboxes can show tooltips */
+        input[type="checkbox"].tooltip {
+            position: relative;
+        }
+
+        .tooltip[data-tooltip]:not([data-tooltip=""]):hover::after {
+            opacity: 1 !important;
+            visibility: visible;
+            transition-delay: .3s;
+        }
+
+        /* hide tooltip immediately, fade-out can be glitchy when hovering has stopped */
+        .tooltip[data-tooltip]:not(:hover)::after {
+            opacity: 0 !important;
+            visibility: hidden !important;
+            transition: none !important;
+        }
+
+        /* longer delay for logo tooltip */
+        a:has(#app-icon).tooltip[data-tooltip]:not([data-tooltip=""]):hover::after {
+            transition-delay: 1s;
+        }
+
+        #radius-marker.tooltip[data-tooltip]::after {
+            left: -40px;
+        }
+
+        .tooltip[data-tooltip]:hover {
+            z-index: 100001;
+            position: relative;
+        }
+
+        /* flip, align, glide, vary tooltips below cursor instead of above */
+        #flip.tooltip[data-tooltip]:not([data-tooltip=""])::after,
+        #align.tooltip[data-tooltip]:not([data-tooltip=""])::after,
+        #glide.tooltip[data-tooltip]:not([data-tooltip=""])::after,
+        #randomize-size-lifetime.tooltip[data-tooltip]:not([data-tooltip=""])::after,
+        label[for="flip"] .tooltip[data-tooltip]:not([data-tooltip=""])::after,
+        label[for="align"] .tooltip[data-tooltip]:not([data-tooltip=""])::after,
+        label[for="glide"] .tooltip[data-tooltip]:not([data-tooltip=""])::after,
+        label[for="randomize-size-lifetime"] .tooltip[data-tooltip]:not([data-tooltip=""])::after {
+            transform: translate(-50%, 10px);
+        }
+
+        #show-folder-btn {
+            cursor: pointer !important;
+            transform: translateY(1px);
+            filter: drop-shadow(1px 1px 0px rgba(0, 0, 0, 0.3));
+        }
+
+        #show-folder-btn:hover {
+            transform: translateY(1px) scale(1.15);
+            filter: drop-shadow(1px 1px 0px rgba(0, 0, 0, 0.4));
+        }
+
+        #show-folder-btn:active {
+            transform: translateY(1px) scale(0.9);
+            filter: drop-shadow(1px 1px 0px rgba(0, 0, 0, 0.3));
+        }
+
+        #download-templates-btn {
+            cursor: pointer !important;
+            transform: translateY(1px);
+            filter: drop-shadow(1px 1px 0px rgba(0, 0, 0, 0.3));
+        }
+
+        #download-templates-btn:hover {
+            transform: translateY(1px) scale(1.15);
+            filter: drop-shadow(1px 1px 0px rgba(0, 0, 0, 0.4));
+        }
+
+        #download-templates-btn:active {
+            transform: translateY(1px) scale(0.9);
+            filter: drop-shadow(1px 1px 0px rgba(0, 0, 0, 0.3));
+        }
+
+        #app-icon:active {
+            transform: scale(0.95);
+        }
+
+        .okButton {
+            border: 1px solid #003c74; 
+            background: linear-gradient(180deg,#fff,#ecebe5 86%,#d8d0c4);
+            border-radius: 3px;
+            outline: 1px dotted #000;
+            outline-offset: -4px;
+            box-shadow: inset -1px 1px #cee7ff,inset 1px 2px #98b8ea,inset -2px 2px #bcd4f6,inset 1px -1px #89ade4,inset 2px -2px #89ade4;
+        }
+        .okButton:focus {
+            border: 1px solid #000000; 
+            box-shadow: 
+                inset -1px 1px #cee7ff, inset 1px 2px #98b8ea, inset -2px 2px #bcd4f6, inset 1px -1px #89ade4, inset 2px -2px #89ade4, 
+                0 0 0 3px #cee7ff,
+                0 0 0 4px #003c74;
+            outline: none;
+        }
+
+        #is-unlicensed label {
+            background-color: #ffffe1;
+            padding: 5px 10px;
+            border: 1px solid #000;
+            border-radius: 0;
+            box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            display: inline-block;
+        }
+
+    </style>
+  </head>
+  <body>
+    <div class="window" style="width: 400px">
+        
+    <div class="title-bar">
+        <div style="display: flex; align-items: center; gap: 4px; margin-left: 4px;">
+            <img class="title-bar-icon" src="./assets/UI/sparkles-BW.png" style="width: 20px; height: 20px;" draggable="false">
+            <span class="title-bar-text" style="margin: 0; padding: 0; transform: translateY(1px);">Sparkle Mouse</span>
+        </div>
+        <div class="title-bar-controls">
+            <button aria-label="Help" id="help-btn"></button>
+        <button aria-label="Close" id="close-btn"></button>
+        </div>
+    </div>
+
+    <div class="window-body">
+
+        <div id="support-message" style="text-align: center;">
+            <label><small>Please consider <a href="__PROJECT_URL__/buy">purchasing Sparkle Mouse!</a> ❤️</small></label>
+        </div>
+        <div style="height: 20px;"></div>
+
+        <!-- icon & logo -->
+        <div style="text-align: center;">
+            <a href="__PROJECT_URL__" class="tooltip" data-tooltip="More info & updates!
+(Opens browser)" style="display: inline-block; cursor: pointer !important;">
+                <img id="app-icon" src="./assets/UI/sparkle-mouse.png" style="display: block; margin: 0 auto; width: 100px; height: 100px; cursor: pointer !important;" draggable="false">
+            </a>
+        </div>
+
+        <div style="height: 18px;"></div>
+        
+        <!-- auto-start -->
+        <div style="display: flex; justify-content: center; align-items: center; gap: 5px;">
+            <input type="checkbox" id="autostart">
+            <label for="autostart">Launch On Boot</label>
+        </div>
+
+        <div style="height: 8px;"></div>
+
+        <!-- pause -->
+        <div style="display: flex; justify-content: center; align-items: center; gap: 5px;">
+            <input type="checkbox" id="paused">
+            <label for="paused">Pause (Shortcut)</label>
+        </div>
+
+        <div style="height: 30px;"></div>
+
+        <!-- template selector -->
+        <div style="display: flex; justify-content: center; align-items: center; gap: 5px;">
+            <label>Template:</label>
+            <select id="template-select">
+            </select>
+            <button class="tooltip" data-tooltip="Delete selected template" id="delete-template-btn" disabled><small>Delete</small></button>
+        </div>
+
+        <div style="height: 11px;"></div>
+
+        <!-- tabs -->
+        <section class="tabs" style="max-width: 500px">
+            <menu role="tablist" aria-label="Sample Tabs">
+                <button role="tab" aria-selected="true" aria-controls="tab-A">🐁 Spawning</button>
+                <button role="tab" aria-controls="tab-B">💫 Motion</button>
+                <button role="tab" aria-controls="tab-C">🖼️ Images</button>
+            </menu>
+            
+            <!-- spawn tab -->
+            <article role="tabpanel" id="tab-A">
+                
+                <div style="height: 15px;"></div>
+
+                <div class="field-row">
+                    <!-- amount -->
+                    <label for="amount" style="width: 50px;">Amount</label>
+                    <input id="amount" class="setting-control" type="range" min="0" max="1" step="0.01" value="0.5" />
+
+                    <div style="width: 10px;"></div>
+
+                    <!-- radius -->
+                    <label for="radius">Radius</label>
+                    <div style="position: relative; display: inline-block; width: 120px;">
+                        <input id="radius" class="setting-control" type="range" min="0" max="1" step="0.01" value="0.5" style="width: 120px;" />
+                        <div id="radius-marker" class="tooltip" data-tooltip="When at 100%, spawn everywhere on screen"></div>
+                    </div>
+                </div>
+
+                <div style="height: 20px;"></div>
+
+                <!-- lifetime -->
+                <div class="field-row">
+                    <label for="life" style="width: 50px;">Lifetime</label>
+                    <div style="position: relative; display: inline-block; width:380px">
+                        <input id="life" class="setting-control" type="range" min="0" max="1" step="0.01" value="0.5" />
+                    </div>
+
+                    <div style="width: 10px;"></div>
+
+                    <!-- size -->
+                    <label for="size" style="transform: translateY(2px)">Size</label>
+                    <input id="size" class="setting-control" type="range" min="0" max="1" step="0.01" value="0.5" style="transform: translateY(2px)" />
+
+                    <div style="width: 10px;"></div>
+
+                    <!-- randomize size & lifetime -->
+                    <input type="checkbox" class="setting-control tooltip" id="randomize-size-lifetime" data-tooltip="Randomize Lifetime and Size a bit">
+                    <label for="randomize-size-lifetime"><span class="tooltip" data-tooltip="Randomize Lifetime and Size a bit">Vary</span></label>
+                </div>
+
+                <div style="height: 20px;"></div>
+
+                <!-- motion type -->
+                <div class="field-row" style="max-height: 10px; transform: translateY(23px); width:max-content">
+                    <fieldset style="flex: 1;">
+                        <legend>When cursor is...</legend>
+                            <input type="radio" class="setting-control" name="mouse-state" id="still" value="still">
+                            <label for="still">Still</label>
+
+                            <input type="radio" class="setting-control" name="mouse-state" id="move" value="move" checked>
+                            <label for="move">Moving</label>
+
+                            <input type="radio" class="setting-control" name="mouse-state" id="still-move" value="still-move">
+                            <label for="still-move">Both</label>
+                    </fieldset>
+
+                    <div style="width: 20px;"></div>
+
+                    <!-- translucent -->
+                    <input type="checkbox" class="setting-control" id="translucent" style="transform: translateY(-2px);">
+                    <label for="translucent" style="transform: translateY(-2px);">Translucent</label>
+                </div>
+
+                <div style="height: 15px;"></div>
+
+            </article>
+
+            <!-- motion tab -->
+            <article role="tabpanel" hidden id="tab-B">
+
+                <div style="height: 15px;"></div>
+
+                <div class="field-row">
+                    <!-- spinning -->
+                    <label for="spinning" style="width: 50px;">Spinning</label>
+                    <input id="spinning" class="setting-control" type="range" min="0" max="1" step="0.01" value="0.5" />
+
+                    <div style="width: 10px;"></div>
+
+                    <!-- align to velocity -->
+                    <input type="checkbox" class="setting-control tooltip" id="align" data-tooltip="Rotate to follow motion">
+                    <label for="align"><span class="tooltip" data-tooltip="Rotate to follow motion">Align</span></label>
+
+                    <div style="width: 10px;"></div>
+
+                    <!-- flip -->
+                    <input type="checkbox" class="setting-control tooltip" id="flip" data-tooltip="Flip image when moving left/right">
+                    <label for="flip"><span class="tooltip" data-tooltip="Flip image when moving left/right">Flip</span></label>
+
+                    <div style="width: 20px;"></div>
+
+                    <!-- turbulence -->
+                    <label for="turbulence" style="width: 50px;">Turbulence</label>
+                    <input id="turbulence" class="setting-control" type="range" min="0" max="1" step="0.01" value="0.0" />
+                </div>
+
+                <div style="height: 20px;"></div>
+
+                <div class="field-row">
+                    <!-- gravity -->
+                    <label for="gravity" style="width: 50px;">Gravity</label>
+                    <label for="range27">↑</label>
+                    <div style="position: relative; display: inline-block;">
+                        <input id="gravity" class="setting-control" type="range" min="0" max="1" step="0.025" value="0.5" />
+                        <div id="gravity-marker" class="tooltip" data-tooltip="Reset to 0 gravity"></div>
+                    </div>
+                    <label for="range27">↓</label>
+
+                    <div style="width: 20px;"></div>
+
+                    <!-- glide -->
+                    <input type="checkbox" class="setting-control tooltip" id="glide" data-tooltip="Subtle horizontal push on start">
+                    <label for="glide"><span class="tooltip" data-tooltip="Subtle horizontal push on start">Glide</span></label>
+
+                    <div style="width: 10px;"></div>
+
+                    <!-- outwards -->
+                    <label for="outwards" style="width: 50px;">Outwards</label>
+                    <input id="outwards" class="setting-control" style="max-width:65px" type="range" min="0" max="1" step="0.01" value="0.5" />
+                </div>
+
+                <div style="height: 18px;"></div>
+
+                <!-- animation -->
+                <div class="field-row" style="width:max-content">
+                    <fieldset>
+                        <legend>Animation</legend>
+                        <div style="height: 3px;"></div>
+                        <input type="checkbox" class="setting-control" id="grow">
+                        <label for="grow" style="transform: translateY(-1px) !important;">Grow</label>
+                        <input type="checkbox" class="setting-control" id="shrink">
+                        <label for="shrink" style="transform: translateY(-1px) !important;">Shrink</label>
+                        <input type="checkbox" class="setting-control" id="fade">
+                        <label for="fade" style="transform: translateY(-1px) !important;">Fade</label>
+                        <input type="checkbox" class="setting-control" id="bouncy">
+                        <label for="bouncy" style="transform: translateY(-1px) !important;">Bouncy</label>
+                        <input type="checkbox" class="setting-control" id="glittery">
+                        <label for="glittery" style="transform: translateY(-1px) !important;">Glittery</label>
+                    </fieldset>
+                </div>
+            </article>
+
+            <!-- images tab -->
+            <article role="tabpanel" hidden id="tab-C">
+
+                <div style="display: flex; justify-content: center; align-items: center; gap: 5px;">
+                    <select id="image-data" class="setting-control" style="min-width: 70px; width:70px; max-width: 70px;">
+                    </select>
+
+                    <!-- image button -->
+                    <button id="select-images-btn"><small>Select...</small></button>
+
+                    <div style="width: 10px;"></div>
+
+                    <!-- animation speed -->
+                    <div style="position: relative; display: inline-block;">
+                        <input id="image-speed" class="setting-control" type="range" min="0" max="1" step="0.005" value="0" style="width: 80px;" />
+                        <div id="speed-marker" class="tooltip" style="display: none;" data-tooltip="Set to average animation speed"></div>
+                    </div>
+                    <label for="image-speed" id="speedLabel" style="width: 50px;">Speed</label>
+                </div>
+
+                <div style="height: 10px;"></div>
+
+                <div style="display: flex; flex-direction: column; align-items: center;">
+                    <progress id="image-loading-progress" style="display:none; height:20px; transform: translateY(20px);" max="100" value="70"></progress>
+                    <label id="image-loading-text" style="display:none; font-size: 12px; color: #888; transform: translateY(25px);">Optimizing...</label>
+                </div>
+
+                <!-- sprite sheet preview -->
+                <div id="sprite-sheet-preview" style="display: block; text-align: center; position: relative;">
+                    <div style="
+                        min-height: 100px;
+                        max-height: 100px; 
+                        overflow: auto; 
+                        border: 1px solid #888; 
+                        padding: 5px; 
+                        background-color: #eee;
+                        background-image: 
+                            linear-gradient(45deg, #ccc 25%, transparent 25%), 
+                            linear-gradient(-45deg, #ccc 25%, transparent 25%), 
+                            linear-gradient(45deg, transparent 75%, #ccc 75%), 
+                            linear-gradient(-45deg, transparent 75%, #ccc 75%);
+                        background-size: 20px 20px;
+                        background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+                    ">
+                        <img id="sprite-sheet-img" style="max-width: 100%; height: auto; image-rendering: pixelated;" />
+                    </div>
+
+                    <!-- support message if unlicensed -->
+                    <div id="is-unlicensed" style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; pointer-events: none;">
+                        <label style="pointer-events: auto;">Please <a href="__PROJECT_URL__/buy">purchase</a>&nbsp; to use custom images. Thank you! :)</label>
+                    </div>
+
+                    <div id="play-from-start-container" style="position: absolute; bottom: 5px; left: 50%; transform: translateX(-50%); display: none; align-items: center; gap: 3px; background-color: rgba(255, 255, 255, 0.9); padding: 2px 6px; border-radius: 2px;">
+                        <input type="checkbox" id="image-play-from-start" class="setting-control">
+                        <label for="image-play-from-start" style="margin: 0;">Play From Start</label>
+                    </div>
+                </div>
+
+            </article>
+        </section>
+
+        <div style="height: 10px;"></div>
+
+        <div style="display: flex; justify-content: center; align-items: center; gap: 5px;">
+            <label>Save as:</label>
+            <input id="text22" type="text" placeholder="Enter name..." maxlength="25" style="width:90px" />
+            <button id="save-template-btn" class="tooltip" data-tooltip="Add new template to the list"><small>Save</small></button>
+            <div style="width: 1px;"></div>
+            <span class="tooltip" data-tooltip="Open folder with Sparkle templates">
+                <img id="show-folder-btn" src="./assets/UI/folder.png" style="width: 20px; height: 20px;" draggable="false">
+            </span>
+            <span class="tooltip" data-tooltip="Download more Sparkle templates!">
+                <img id="download-templates-btn" src="./assets/UI/download.png" style="width: 20px; height: 20px;" draggable="false">
+            </span>
+        </div>
+        
+        <div style="height: 30px;"></div>
+
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <!-- monitor -->
+            <select id="monitor-select">
+            </select>
+
+            <div style="display: flex; gap: 5px;">
+                <!-- Quit -->
+                <button class="quitButton tooltip" data-tooltip="Stop program"><small>Quit</small></button>
+
+                <!-- OK -->
+                <button class="okButton tooltip" data-tooltip="Close settings window (ESC)">OK!</button>
+            </div>
+        </div>
+
+      </div>
+    </div>
+  </body>
+</html>

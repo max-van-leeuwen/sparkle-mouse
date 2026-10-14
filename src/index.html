@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sparkle Mouse</title>
+    <style>
+      #main, .container {
+        width: 100vw;
+        height: 100vh;
+        margin: 0;
+        padding: 0;
+        background: transparent !important;
+        box-sizing: border-box;
+      }
+      html, body {
+        width: 100vw;
+        height: 100vh;
+        margin: 0;
+        padding: 0;
+        background: transparent !important;
+        overflow: hidden;
+      }
+      #three-container {
+        width: 100vw;
+        height: 100vh;
+        background: transparent !important;
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: 1;
+      }
+    </style>
+    <script type="module" src="/main.js" defer></script>
+  </head>
+
+  <body>
+    <div id="three-container"></div>
+  </body>
+</html>
