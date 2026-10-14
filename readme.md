@@ -23,7 +23,7 @@ GPU optimized sparkles for Windows + Mac + Web
 
 - The sparkle-mouse [JS package](https://github.com/max-van-leeuwen/sparkle-mouse/tree/main/examples/bundled-package) is 100% free. Use it on your website! [Here's](https://sparkle-mouse.neocities.org) a live example.
 
-- The desktop app is open-source. Please buy the installer ([itch.io](https://maxvanleeuwen.itch.io/sparkle-mouse)) to support development! Thank you :)
+- The desktop app is open-source.<br>Please get the installer from [itch.io](https://maxvanleeuwen.itch.io/sparkle-mouse) or [Steam](https://store.steampowered.com/app/5077340/Sparkle_Mouse/) to support development! Thank you :)
 
 <br>
 
@@ -177,10 +177,19 @@ gnome-extensions enable appindicatorsupport@rgcjonas.gmail.com
 <br>
 
 ## Support this project
-If you like this project and want to support it, please consider buying the [executable](https://maxvanleeuwen.itch.io/sparkle-mouse) or [donating](https://ko-fi.com/maxvanleeuwen)! :)
+If you like this project and want to support it, please consider buying the executable from [itch.io](https://maxvanleeuwen.itch.io/sparkle-mouse) or [Steam](https://store.steampowered.com/app/5077340/Sparkle_Mouse/), or make a [donation](https://ko-fi.com/maxvanleeuwen)! :)
 
 
 <br>
 <br>
 
 ![Cursors](readme-media/cursors.gif)
+
+
+<br>
+
+## License
+
+This repository is MIT-licensed, but pre-compiled binaries are sold on Steam/itch.io to support development.
+
+By submitting a pull request, you agree that your contribution will be licensed under MIT and may be included in these paid releases.
