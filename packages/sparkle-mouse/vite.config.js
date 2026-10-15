@@ -15,6 +15,7 @@ export default defineConfig({
                 scene: resolve(__dirname, 'src/scene.js'),
                 spritesheet: resolve(__dirname, 'src/spritesheet.js'),
                 logger: resolve(__dirname, 'src/logger.js'),
+                react: resolve(__dirname, 'src/react.js'),
             },
             formats: ['es'],
             fileName: (format, entryName) => `${entryName}.js`,
@@ -23,7 +24,11 @@ export default defineConfig({
         emptyOutDir: true,
         minify: false,
         rollupOptions: {
-            external: ['three', 'omggif', 'upng-js'],
+            external: ['three', 'omggif', 'upng-js', 'react', 'sparkle-mouse'],
+            output: {
+                // mark the react component as client-only (e.g. for Next.js)
+                banner: (chunk) => chunk.name === 'react' ? "'use client';" : '',
+            },
         },
     },
 });
