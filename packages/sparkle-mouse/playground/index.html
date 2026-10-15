@@ -1,0 +1,29 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>sparkle-mouse playground</title>
+    <style>
+        body { margin: 0; background: #1d1b2f; color: #ddd; font: 14px system-ui; }
+        #ui { position: fixed; top: 10px; left: 10px; z-index: 100000; }
+        button, select { margin: 0 4px 4px 0; }
+    </style>
+</head>
+<body>
+    <div id="ui">
+        <button id="start">start</button>
+        <button id="pause">pause</button>
+        <button id="stop">stop</button>
+        <button id="destroy">destroy</button>
+        <button id="demo">demo shapes</button>
+        <button id="restore">lose + restore webgl</button>
+        <select id="template">
+            <option value="default">default sparkles</option>
+            <option value="turbulence">turbulence</option>
+            <option value="big">big</option>
+        </select>
+        <pre id="log"></pre>
+    </div>
+    <script type="module" src="./playground.js"></script>
+</body>
+</html>
