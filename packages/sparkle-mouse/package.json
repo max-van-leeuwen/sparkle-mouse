@@ -17,8 +17,12 @@
     "directory": "packages/sparkle-mouse"
   },
   "main": "dist/index.js",
+  "types": "types/index.d.ts",
   "exports": {
-    ".": "./dist/index.js",
+    ".": {
+      "types": "./types/index.d.ts",
+      "default": "./dist/index.js"
+    },
     "./cursor": "./dist/cursor.js",
     "./demo": "./dist/demo.js",
     "./shapes": "./dist/shapes.js",
@@ -31,6 +35,7 @@
   },
   "files": [
     "dist/",
+    "types/",
     "LICENSE.txt",
     "README.md"
   ],

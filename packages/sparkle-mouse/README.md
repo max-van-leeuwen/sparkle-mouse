@@ -26,6 +26,12 @@ pnpm add sparkle-mouse
 
 Three.js is required as a peer dependency.
 
+TypeScript types are included, no extra install needed:
+
+```typescript
+import SparkleMouse, { type SparkleSettings } from 'sparkle-mouse';
+```
+
 ## Quick Start
 
 ```javascript
