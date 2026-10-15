@@ -17,8 +17,12 @@
     "directory": "packages/sparkle-mouse"
   },
   "main": "dist/index.js",
+  "types": "types/index.d.ts",
   "exports": {
-    ".": "./dist/index.js",
+    ".": {
+      "types": "./types/index.d.ts",
+      "default": "./dist/index.js"
+    },
     "./cursor": "./dist/cursor.js",
     "./demo": "./dist/demo.js",
     "./shapes": "./dist/shapes.js",
@@ -31,13 +35,15 @@
   },
   "files": [
     "dist/",
+    "types/",
     "LICENSE.txt",
     "README.md"
   ],
   "scripts": {
     "build": "vite build",
     "prepublishOnly": "npm run build",
-    "test": "echo \"No tests yet\""
+    "test": "echo \"No tests yet\"",
+    "typecheck": "tsc"
   },
   "keywords": [
     "particles",
@@ -57,6 +63,7 @@
     "upng-js": "^2.1.0"
   },
   "devDependencies": {
+    "typescript": "^7.0.2",
     "vite": "^7.1.7"
   }
 }

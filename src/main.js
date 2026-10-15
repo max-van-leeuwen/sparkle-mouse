@@ -84,6 +84,12 @@ window.addEventListener("DOMContentLoaded", async () => {
         cursorAPI = await initializeCursorAPI(displayAPI);
         rendererAPI = await initializeRendererAPI(container, cursorAPI);
 
+        // rebuild the scene when the WebGL context is restored
+        rendererAPI.restartScene = async () => {
+            await stopScene();
+            await startScene();
+        };
+
         // don't stream cursor position while not rendering
         rendererAPI.onRenderingActive.add(async (isActive) => {
             try {

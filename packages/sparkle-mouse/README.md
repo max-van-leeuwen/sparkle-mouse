@@ -26,6 +26,12 @@ pnpm add sparkle-mouse
 
 Three.js is required as a peer dependency.
 
+TypeScript types are included, no extra install needed:
+
+```typescript
+import SparkleMouse, { type SparkleSettings } from 'sparkle-mouse';
+```
+
 ## Quick Start
 
 ```javascript
@@ -88,6 +94,9 @@ sparkleMouse.resume();
 
 // Stop
 await sparkleMouse.stop();
+
+// Remove completely, e.g. when leaving the page (releases the WebGL renderer)
+await sparkleMouse.destroy();
 
 // Show demo animation
 sparkleMouse.setDemoShapesDrawing(true);
@@ -324,6 +333,16 @@ Stops spawning and stops rendering sparkles.
 
 ```javascript
 await sparkleMouse.stop();
+```
+
+#### `destroy()`
+
+Stops rendering and releases everything this instance uses: the WebGL renderer, its listeners, and the canvas if it was created automatically. Use this when you're done with the sparkles, e.g. when removing them from the page. Create a new instance to start again.
+
+**Returns:** Promise
+
+```javascript
+await sparkleMouse.destroy();
 ```
 
 #### `setScale(scale)`

@@ -65,6 +65,7 @@ export async function initializeCursorAPI(canvas) {
         getScreenSize: getScreenSize,
         updateCursorTracking: updateCursorTracking,
         clearCallbacks: clearCallbacks,
+        dispose: dispose,
         updateScreenDimensions: updateScreenDimensions,
         enableCursorTracking: enableCursorTracking,
         getCursorTrackingEnabled: getCursorTrackingEnabled,
@@ -224,6 +225,11 @@ export async function initializeCursorAPI(canvas) {
         cursorAPI.onStop.clear();
     }
 
+    function dispose() {
+        listeners.abort();
+        clearCallbacks();
+    }
+
     function updateScreenDimensions() {
         cursorAPI.lastScreenSize = cursorAPI.getScreenSize();
     }
@@ -344,9 +350,10 @@ export async function initializeCursorAPI(canvas) {
     cursorAPI.updateScreenDimensions();
 
     // update screen size on window resize (each instance needs its own)
+    const listeners = new AbortController(); // removes the listener on dispose
     window.addEventListener('resize', () => {
         cursorAPI.updateScreenDimensions();
-    });
+    }, { signal: listeners.signal });
 
     // use new tracking data to check if cursor is moving or standing still
     function didCursorMove(prvPos){

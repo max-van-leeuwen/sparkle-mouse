@@ -7,6 +7,7 @@ import SparkleMouse from './index.js';
 import { initializeRendererAPI } from './renderer.js';
 import { showScene } from './scene.js';
 import { initializeCursorAPI, worldToScreen } from './cursor.js';
+import { demoShapesDrawing } from './demo.js';
 
 
 
@@ -25,6 +26,51 @@ export async function initialize(canvas, sparkleData, isCustomCanvas = false, gl
         isLoadingScene: false,
         renderOutOfView: renderOutOfView
     };
+
+    // load settings
+    await loadSettings(context, sparkleData);
+    
+    // helper function to get canvas dimensions
+    const getCanvasDimensions = () => {
+        if (canvas && canvas.tagName === 'CANVAS') {
+            const rect = canvas.getBoundingClientRect();
+            return { width: rect.width, height: rect.height };
+        }
+        return { width: window.innerWidth, height: window.innerHeight };
+    };
+    
+    // initialize display API with initial monitor aspect ratio
+    const dimensions = getCanvasDimensions();
+    context.displayAPI.aspect = dimensions.width / dimensions.height;
+    context.displayAPI.isCustomCanvas = isCustomCanvas;
+    
+    // initialize APIs
+    try {
+        context.cursorAPI = await initializeCursorAPI(canvas);
+        context.rendererAPI = await initializeRendererAPI(canvas, context.cursorAPI, globalScale);
+    } catch (error) {
+        throw error;
+    }
+    
+    // rebuild the scene when the WebGL context is restored (e.g. after system sleep)
+    context.rendererAPI.restartScene = async () => {
+        await stopScene(context);
+        await startScene(context);
+    };
+
+    // update displayAPI when renderer resizes
+    context.rendererAPI.onResize.add((dimensions) => {
+        const newAspect = dimensions.width / dimensions.height;
+        context.displayAPI.aspect = newAspect;
+    });
+    
+    return context;
+}
+
+
+
+// parse and validate sparkle data into the context
+async function loadSettings(context, sparkleData) {
     // parse sparkle data
     if (typeof sparkleData === 'string') {
         // check if URL or raw content
@@ -71,36 +117,6 @@ export async function initialize(canvas, sparkleData, isCustomCanvas = false, gl
     if (context.currentImageData.includes('*')) {
         context.currentImageData = context.currentImageData.split('*').pop();
     }
-    
-    // helper function to get canvas dimensions
-    const getCanvasDimensions = () => {
-        if (canvas && canvas.tagName === 'CANVAS') {
-            const rect = canvas.getBoundingClientRect();
-            return { width: rect.width, height: rect.height };
-        }
-        return { width: window.innerWidth, height: window.innerHeight };
-    };
-    
-    // initialize display API with initial monitor aspect ratio
-    const dimensions = getCanvasDimensions();
-    context.displayAPI.aspect = dimensions.width / dimensions.height;
-    context.displayAPI.isCustomCanvas = isCustomCanvas;
-    
-    // initialize APIs
-    try {
-        context.cursorAPI = await initializeCursorAPI(canvas);
-        context.rendererAPI = await initializeRendererAPI(canvas, context.cursorAPI, globalScale);
-    } catch (error) {
-        throw error;
-    }
-    
-    // update displayAPI when renderer resizes
-    context.rendererAPI.onResize.add((dimensions) => {
-        const newAspect = dimensions.width / dimensions.height;
-        context.displayAPI.aspect = newAspect;
-    });
-    
-    return context;
 }
 
 
@@ -115,6 +131,16 @@ export async function start(canvas, sparkleData, isCustomCanvas = false, globalS
 
     // return context for instance management
     return context;
+}
+
+
+
+// restart with new sparkle data, keeping the existing renderer and listeners
+export async function restart(context, sparkleData, renderOutOfView = true) {
+    await stopScene(context);
+    await loadSettings(context, sparkleData);
+    context.renderOutOfView = renderOutOfView;
+    await startScene(context);
 }
 
 
@@ -199,7 +225,17 @@ async function startScene(context) {
 
 // stop rendering
 export async function stop(context) {
+    if (!context) return;
     await stopScene(context);
+}
+
+
+
+// stop rendering and release the renderer and listeners, the context can't be used afterwards
+export async function dispose(context) {
+    await stopScene(context);
+    if (context.cursorAPI) context.cursorAPI.dispose();
+    if (context.rendererAPI) context.rendererAPI.dispose();
 }
 
 
@@ -215,6 +251,11 @@ async function stopScene(context) {
     // remove all cursor tracking callbacks
     if (context.cursorAPI) {
         context.cursorAPI.clearCallbacks();
+    }
+
+    // stop demo shapes drawing, it would keep running in the background
+    if (context.cursorAPI && context.cursorAPI.isDemoShapesDrawing) {
+        demoShapesDrawing(context.cursorAPI, context.rendererAPI, false);
     }
     
     // destroy scene data
@@ -253,7 +294,7 @@ async function stopScene(context) {
 
 // pause rendering
 export function pause(context) {
-    if (context.rendererAPI) {
+    if (context && context.rendererAPI) {
         context.rendererAPI.pause();
     }
 }
@@ -262,7 +303,7 @@ export function pause(context) {
 
 // resume rendering
 export function resume(context) {
-    if (context.rendererAPI) {
+    if (context && context.rendererAPI) {
         context.rendererAPI.resume();
     }
 }
@@ -271,14 +312,14 @@ export function resume(context) {
 
 // enable/disable cursor tracking
 export function setCursorTracking(context, enabled) {
-    if (context.cursorAPI) {
+    if (context && context.cursorAPI) {
         context.cursorAPI.enableCursorTracking(enabled);
     }
 }
 
 // get cursor tracking state
 export function getCursorTracking(context) {
-    if (context.cursorAPI) {
+    if (context && context.cursorAPI) {
         return context.cursorAPI.getCursorTrackingEnabled();
     }
     return false;
@@ -288,7 +329,7 @@ export function getCursorTracking(context) {
 
 // draw at specific position (cursor tracking must be disabled)
 export function drawAtPosition(context, x, y) {
-    if (context.cursorAPI) {
+    if (context && context.cursorAPI) {
         if (x === undefined) {
             // no position given, break interpolation
             context.cursorAPI.breakInterpolation = true;
@@ -304,7 +345,7 @@ export function drawAtPosition(context, x, y) {
 
 // draw at specific canvas/world position (cursor tracking must be disabled)
 export function drawAtCanvasPosition(context, x, y) {
-    if (context.cursorAPI && context.rendererAPI) {
+    if (context && context.cursorAPI && context.rendererAPI) {
         if (x === undefined) {
             // no position given, break interpolation
             context.cursorAPI.breakInterpolation = true;
@@ -334,7 +375,7 @@ export function drawAtCanvasPosition(context, x, y) {
 
 // get current canvas rect bounds
 export function getCanvasRect(context) {
-    if (context.rendererAPI && context.rendererAPI.camera) {
+    if (context && context.rendererAPI && context.rendererAPI.camera) {
         const camera = context.rendererAPI.camera;
         return {
             left: camera.left,
