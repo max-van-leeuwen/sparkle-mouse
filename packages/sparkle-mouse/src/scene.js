@@ -261,9 +261,11 @@ export async function showScene(settings, imageData, rendererAPI, cursorAPI, ren
     const scene = rendererAPI.scene;
 
     // turbulence texture
+    let turbulenceTarget = null;
     let turbulenceTexture = null;
     if (settings['turbulence'] > 0) {
-        turbulenceTexture = await generateTurbulenceTexture(renderer);
+        turbulenceTarget = await generateTurbulenceTexture(renderer);
+        turbulenceTexture = turbulenceTarget.texture;
         if (debugShowTurbulence) {
             const debugQuad = createTurbulenceDebug(turbulenceTexture);
             scene.add(debugQuad);
@@ -404,6 +406,12 @@ export async function showScene(settings, imageData, rendererAPI, cursorAPI, ren
             forceSinglePass: true,
             vertexShader: vertexShader,
             fragmentShader: fragmentShader,
+        });
+
+        // free the textures along with the material, material.dispose() doesn't do this on its own
+        particlesMaterial.addEventListener('dispose', () => {
+            particleTexture.dispose();
+            if (turbulenceTarget) turbulenceTarget.dispose();
         });
 
         // add to scene
@@ -767,7 +775,7 @@ export async function showScene(settings, imageData, rendererAPI, cursorAPI, ren
 
 
 
-// generate turbulence texture once on start
+// generate turbulence texture once on start, returns the render target (texture is in .texture)
 // this could be a baked texture, but it's nice to be able to procedurally change parameters to tweak the look
 function generateTurbulenceTexture(renderer){
     const turbulenceSize = 10;
@@ -811,7 +819,7 @@ function generateTurbulenceTexture(renderer){
         geometry.dispose();
         material.dispose();
         scene.remove(quad);
-        resolve(renderTarget.texture);
+        resolve(renderTarget);
     });
 }
 
