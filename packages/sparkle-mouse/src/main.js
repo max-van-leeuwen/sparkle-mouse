@@ -225,6 +225,7 @@ async function startScene(context) {
 
 // stop rendering
 export async function stop(context) {
+    if (!context) return;
     await stopScene(context);
 }
 
@@ -293,7 +294,7 @@ async function stopScene(context) {
 
 // pause rendering
 export function pause(context) {
-    if (context.rendererAPI) {
+    if (context && context.rendererAPI) {
         context.rendererAPI.pause();
     }
 }
@@ -302,7 +303,7 @@ export function pause(context) {
 
 // resume rendering
 export function resume(context) {
-    if (context.rendererAPI) {
+    if (context && context.rendererAPI) {
         context.rendererAPI.resume();
     }
 }
@@ -311,14 +312,14 @@ export function resume(context) {
 
 // enable/disable cursor tracking
 export function setCursorTracking(context, enabled) {
-    if (context.cursorAPI) {
+    if (context && context.cursorAPI) {
         context.cursorAPI.enableCursorTracking(enabled);
     }
 }
 
 // get cursor tracking state
 export function getCursorTracking(context) {
-    if (context.cursorAPI) {
+    if (context && context.cursorAPI) {
         return context.cursorAPI.getCursorTrackingEnabled();
     }
     return false;
@@ -328,7 +329,7 @@ export function getCursorTracking(context) {
 
 // draw at specific position (cursor tracking must be disabled)
 export function drawAtPosition(context, x, y) {
-    if (context.cursorAPI) {
+    if (context && context.cursorAPI) {
         if (x === undefined) {
             // no position given, break interpolation
             context.cursorAPI.breakInterpolation = true;
@@ -344,7 +345,7 @@ export function drawAtPosition(context, x, y) {
 
 // draw at specific canvas/world position (cursor tracking must be disabled)
 export function drawAtCanvasPosition(context, x, y) {
-    if (context.cursorAPI && context.rendererAPI) {
+    if (context && context.cursorAPI && context.rendererAPI) {
         if (x === undefined) {
             // no position given, break interpolation
             context.cursorAPI.breakInterpolation = true;
@@ -374,7 +375,7 @@ export function drawAtCanvasPosition(context, x, y) {
 
 // get current canvas rect bounds
 export function getCanvasRect(context) {
-    if (context.rendererAPI && context.rendererAPI.camera) {
+    if (context && context.rendererAPI && context.rendererAPI.camera) {
         const camera = context.rendererAPI.camera;
         return {
             left: camera.left,

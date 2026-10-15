@@ -267,6 +267,7 @@ export default class SparkleMouse {
             return;
         }
         
+        if (!this.context) return; // not started yet
         if(enabled) setCursorTracking(this.context, false);
         if(!shapes) shapes = demoShapes;
         demoShapesDrawing(this.context.cursorAPI, this.context.rendererAPI, enabled, shapes, scale);
