@@ -3,7 +3,7 @@
 
 
 
-import { start, stop, pause, resume, setCursorTracking, getCursorTracking, drawAtPosition, drawAtCanvasPosition, getCanvasRect } from './main.js';
+import { start, restart, stop, dispose, pause, resume, setCursorTracking, getCursorTracking, drawAtPosition, drawAtCanvasPosition, getCanvasRect } from './main.js';
 import { process } from './spritesheet.js';
 import { demoShapesDrawing } from './demo.js';
 import { shapeHeart, shapeSquiggly, shapeStar, shapeSwirl } from './shapes.js';
@@ -12,6 +12,15 @@ import defaultSparkleRaw from './templates/sparkles.sparkle?raw';
 const defaultSparkle = JSON.parse(defaultSparkleRaw);
 const sparkles = defaultSparkle['image-data'];
 const demoShapes = [shapeHeart, shapeSquiggly, shapeStar, shapeSwirl];
+
+
+
+// runs start(), stop() and destroy() one at a time per instance, so calls that aren't awaited can't overlap
+function queued(sparkleMouse, task) {
+    const result = sparkleMouse.queue.then(task);
+    sparkleMouse.queue = result.catch(() => {}); // keep going after an error, the caller still gets it
+    return result;
+}
 
 
 
@@ -63,6 +72,9 @@ export default class SparkleMouse {
 
         // instance context (initialized in start())
         this.context = null;
+
+        // pending start/stop/destroy calls, see queued()
+        this.queue = Promise.resolve();
     }
 
     /**
@@ -84,6 +96,7 @@ export default class SparkleMouse {
     /**
      * Starts rendering. If already running, stops and restarts with new settings.
      * This method must be awaited before calling other methods.
+     * Calls to start(), stop() and destroy() run one after another, even when they're not awaited.
      * 
      * @param {string|Object} [sparkleData] - URL path, raw .sparkle file content, or settings object. Uses default sparkles if not provided.
      * @example
@@ -100,18 +113,25 @@ export default class SparkleMouse {
      * // 4. Default sparkles
      * await sparkleMouse.start();
      */
-    async start(sparkleData) {
-        if (this.isStarted) {
-            await this.stop();
-        }
+    start(sparkleData) {
+        return queued(this, async () => {
+            if (!sparkleData) sparkleData = {...defaultSparkle};
+            
+            if (this.context) {
+                // already initialized, keep the renderer and only rebuild the scene
+                this.isStarted = false;
+                await restart(this.context, sparkleData, this.renderOutOfView);
+                // same state as a fresh start
+                resume(this.context);
+                setCursorTracking(this.context, true);
+            } else {
+                // start and get context
+                this.context = await start(this.canvas, sparkleData, this.isCustomCanvas, this.globalScale, this.renderOutOfView);
+            }
 
-        if (!sparkleData) sparkleData = {...defaultSparkle};
-        
-        // start and get context
-        this.context = await start(this.canvas, sparkleData, this.isCustomCanvas, this.globalScale, this.renderOutOfView);
-
-        this.isStarted = true;
-        this.isPaused = false;
+            this.isStarted = true;
+            this.isPaused = false;
+        });
     }
 
     /**
@@ -199,10 +219,30 @@ export default class SparkleMouse {
     /**
      * Stops spawning and stops rendering sparkles.
      */
-    async stop() {
-        await stop(this.context);
-        this.isStarted = false;
-        this.isPaused = false;
+    stop() {
+        return queued(this, async () => {
+            await stop(this.context);
+            this.isStarted = false;
+            this.isPaused = false;
+        });
+    }
+
+    /**
+     * Stops rendering and releases everything this instance uses: the WebGL renderer, its listeners, and the canvas if it was created automatically.
+     * Use this when you're done with the sparkles, e.g. when removing them from the page. Create a new instance to start again.
+     */
+    destroy() {
+        return queued(this, async () => {
+            if (this.context) {
+                await dispose(this.context);
+                // free the GPU memory right away if nothing else can use the canvas (ours, or already removed from the page)
+                if (!this.isCustomCanvas || !this.canvas.isConnected) this.context.rendererAPI.renderer.forceContextLoss();
+                this.context = null;
+            }
+            if (!this.isCustomCanvas) this.canvas.remove();
+            this.isStarted = false;
+            this.isPaused = false;
+        });
     }
 
     /**
@@ -246,6 +286,7 @@ export default class SparkleMouse {
             return;
         }
         
+        if (!this.context) return; // not started yet
         if(enabled) setCursorTracking(this.context, false);
         if(!shapes) shapes = demoShapes;
         demoShapesDrawing(this.context.cursorAPI, this.context.rendererAPI, enabled, shapes, scale);
