@@ -52,6 +52,12 @@ export async function initialize(canvas, sparkleData, isCustomCanvas = false, gl
         throw error;
     }
     
+    // rebuild the scene when the WebGL context is restored (e.g. after system sleep)
+    context.rendererAPI.restartScene = async () => {
+        await stopScene(context);
+        await startScene(context);
+    };
+
     // update displayAPI when renderer resizes
     context.rendererAPI.onResize.add((dimensions) => {
         const newAspect = dimensions.width / dimensions.height;

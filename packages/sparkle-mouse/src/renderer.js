@@ -19,6 +19,7 @@ export async function initializeRendererAPI(container, cursorAPI, globalScale = 
         scene:null,
         requestedFrameId:null, // current animation frame ID, null means no scene is active
         resetParticles:null, // function to reset particles, set when scene starts
+        restartScene:null, // function to rebuild the scene after the WebGL context is restored
         onResize: new Callback(), // callback when canvas resizes, arg: dimensions
         aspect: 1, // instance-specific aspect ratio
         cameraScale: 1, // instance-specific camera scale
@@ -99,7 +100,7 @@ export async function initializeRendererAPI(container, cursorAPI, globalScale = 
             cancelAnimationFrame(rendererAPI.requestedFrameId);
             rendererAPI.requestedFrameId = null;
         }
-        rendererAPI.onRenderingActive(false);
+        rendererAPI.onRenderingActive.call(false);
     }, { signal: listeners.signal });
 
     canvas.addEventListener('webglcontextrestored', async () => {
@@ -110,11 +111,10 @@ export async function initializeRendererAPI(container, cursorAPI, globalScale = 
         renderer.setSize(dimensions.width, dimensions.height, !isCanvas);
         
         // restart the scene if it was running
-        if (rendererAPI.resetParticles && !rendererAPI.isPaused) {
-            await stopScene();
-            await startScene();
+        if (rendererAPI.restartScene && rendererAPI.resetParticles && !rendererAPI.isPaused) {
+            await rendererAPI.restartScene();
         }
-        rendererAPI.onRenderingActive(true);
+        rendererAPI.onRenderingActive.call(true);
     }, { signal: listeners.signal });
 
     // window can still change size later, make camera aspect dynamic
