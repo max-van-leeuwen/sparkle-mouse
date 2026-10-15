@@ -42,7 +42,8 @@
   "scripts": {
     "build": "vite build",
     "prepublishOnly": "npm run build",
-    "test": "echo \"No tests yet\""
+    "test": "echo \"No tests yet\"",
+    "typecheck": "tsc"
   },
   "keywords": [
     "particles",
@@ -62,6 +63,7 @@
     "upng-js": "^2.1.0"
   },
   "devDependencies": {
+    "typescript": "^7.0.2",
     "vite": "^7.1.7"
   }
 }
