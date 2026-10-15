@@ -192,7 +192,7 @@ Creates a new Sparkle Mouse instance.
 
 #### `start(sparkleData)`
 
-Starts rendering. If already running, stops and restarts with new settings. Must be awaited before calling other methods.
+Starts rendering. If already running, stops and restarts with new settings. Must be awaited before calling other methods. Calls to `start()`, `stop()` and `destroy()` run one after another, even when they're not awaited.
 
 **Parameters:**
 - `sparkleData` (string|Object, optional): URL path to `.sparkle` file, raw `.sparkle` file content, settings object, or omit for default
