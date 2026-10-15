@@ -3,7 +3,7 @@
 
 
 
-import { start, stop, pause, resume, setCursorTracking, getCursorTracking, drawAtPosition, drawAtCanvasPosition, getCanvasRect } from './main.js';
+import { start, restart, stop, dispose, pause, resume, setCursorTracking, getCursorTracking, drawAtPosition, drawAtCanvasPosition, getCanvasRect } from './main.js';
 import { process } from './spritesheet.js';
 import { demoShapesDrawing } from './demo.js';
 import { shapeHeart, shapeSquiggly, shapeStar, shapeSwirl } from './shapes.js';
@@ -101,14 +101,19 @@ export default class SparkleMouse {
      * await sparkleMouse.start();
      */
     async start(sparkleData) {
-        if (this.isStarted) {
-            await this.stop();
-        }
-
         if (!sparkleData) sparkleData = {...defaultSparkle};
         
-        // start and get context
-        this.context = await start(this.canvas, sparkleData, this.isCustomCanvas, this.globalScale, this.renderOutOfView);
+        if (this.context) {
+            // already initialized, keep the renderer and only rebuild the scene
+            this.isStarted = false;
+            await restart(this.context, sparkleData, this.renderOutOfView);
+            // same state as a fresh start
+            resume(this.context);
+            setCursorTracking(this.context, true);
+        } else {
+            // start and get context
+            this.context = await start(this.canvas, sparkleData, this.isCustomCanvas, this.globalScale, this.renderOutOfView);
+        }
 
         this.isStarted = true;
         this.isPaused = false;
@@ -201,6 +206,22 @@ export default class SparkleMouse {
      */
     async stop() {
         await stop(this.context);
+        this.isStarted = false;
+        this.isPaused = false;
+    }
+
+    /**
+     * Stops rendering and releases everything this instance uses: the WebGL renderer, its listeners, and the canvas if it was created automatically.
+     * Use this when you're done with the sparkles, e.g. when removing them from the page. Create a new instance to start again.
+     */
+    async destroy() {
+        if (this.context) {
+            await dispose(this.context);
+            // free the GPU memory right away if nothing else can use the canvas (ours, or already removed from the page)
+            if (!this.isCustomCanvas || !this.canvas.isConnected) this.context.rendererAPI.renderer.forceContextLoss();
+            this.context = null;
+        }
+        if (!this.isCustomCanvas) this.canvas.remove();
         this.isStarted = false;
         this.isPaused = false;
     }

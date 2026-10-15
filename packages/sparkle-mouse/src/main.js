@@ -7,6 +7,7 @@ import SparkleMouse from './index.js';
 import { initializeRendererAPI } from './renderer.js';
 import { showScene } from './scene.js';
 import { initializeCursorAPI, worldToScreen } from './cursor.js';
+import { demoShapesDrawing } from './demo.js';
 
 
 
@@ -25,6 +26,45 @@ export async function initialize(canvas, sparkleData, isCustomCanvas = false, gl
         isLoadingScene: false,
         renderOutOfView: renderOutOfView
     };
+
+    // load settings
+    await loadSettings(context, sparkleData);
+    
+    // helper function to get canvas dimensions
+    const getCanvasDimensions = () => {
+        if (canvas && canvas.tagName === 'CANVAS') {
+            const rect = canvas.getBoundingClientRect();
+            return { width: rect.width, height: rect.height };
+        }
+        return { width: window.innerWidth, height: window.innerHeight };
+    };
+    
+    // initialize display API with initial monitor aspect ratio
+    const dimensions = getCanvasDimensions();
+    context.displayAPI.aspect = dimensions.width / dimensions.height;
+    context.displayAPI.isCustomCanvas = isCustomCanvas;
+    
+    // initialize APIs
+    try {
+        context.cursorAPI = await initializeCursorAPI(canvas);
+        context.rendererAPI = await initializeRendererAPI(canvas, context.cursorAPI, globalScale);
+    } catch (error) {
+        throw error;
+    }
+    
+    // update displayAPI when renderer resizes
+    context.rendererAPI.onResize.add((dimensions) => {
+        const newAspect = dimensions.width / dimensions.height;
+        context.displayAPI.aspect = newAspect;
+    });
+    
+    return context;
+}
+
+
+
+// parse and validate sparkle data into the context
+async function loadSettings(context, sparkleData) {
     // parse sparkle data
     if (typeof sparkleData === 'string') {
         // check if URL or raw content
@@ -71,36 +111,6 @@ export async function initialize(canvas, sparkleData, isCustomCanvas = false, gl
     if (context.currentImageData.includes('*')) {
         context.currentImageData = context.currentImageData.split('*').pop();
     }
-    
-    // helper function to get canvas dimensions
-    const getCanvasDimensions = () => {
-        if (canvas && canvas.tagName === 'CANVAS') {
-            const rect = canvas.getBoundingClientRect();
-            return { width: rect.width, height: rect.height };
-        }
-        return { width: window.innerWidth, height: window.innerHeight };
-    };
-    
-    // initialize display API with initial monitor aspect ratio
-    const dimensions = getCanvasDimensions();
-    context.displayAPI.aspect = dimensions.width / dimensions.height;
-    context.displayAPI.isCustomCanvas = isCustomCanvas;
-    
-    // initialize APIs
-    try {
-        context.cursorAPI = await initializeCursorAPI(canvas);
-        context.rendererAPI = await initializeRendererAPI(canvas, context.cursorAPI, globalScale);
-    } catch (error) {
-        throw error;
-    }
-    
-    // update displayAPI when renderer resizes
-    context.rendererAPI.onResize.add((dimensions) => {
-        const newAspect = dimensions.width / dimensions.height;
-        context.displayAPI.aspect = newAspect;
-    });
-    
-    return context;
 }
 
 
@@ -115,6 +125,16 @@ export async function start(canvas, sparkleData, isCustomCanvas = false, globalS
 
     // return context for instance management
     return context;
+}
+
+
+
+// restart with new sparkle data, keeping the existing renderer and listeners
+export async function restart(context, sparkleData, renderOutOfView = true) {
+    await stopScene(context);
+    await loadSettings(context, sparkleData);
+    context.renderOutOfView = renderOutOfView;
+    await startScene(context);
 }
 
 
@@ -204,6 +224,15 @@ export async function stop(context) {
 
 
 
+// stop rendering and release the renderer and listeners, the context can't be used afterwards
+export async function dispose(context) {
+    await stopScene(context);
+    if (context.cursorAPI) context.cursorAPI.dispose();
+    if (context.rendererAPI) context.rendererAPI.dispose();
+}
+
+
+
 // stop and destroy an existing scene
 async function stopScene(context) {
     // stop animation loop
@@ -215,6 +244,11 @@ async function stopScene(context) {
     // remove all cursor tracking callbacks
     if (context.cursorAPI) {
         context.cursorAPI.clearCallbacks();
+    }
+
+    // stop demo shapes drawing, it would keep running in the background
+    if (context.cursorAPI && context.cursorAPI.isDemoShapesDrawing) {
+        demoShapesDrawing(context.cursorAPI, context.rendererAPI, false);
     }
     
     // destroy scene data

@@ -86,6 +86,9 @@ export async function initializeRendererAPI(container, cursorAPI, globalScale = 
     const dimensions = getCanvasDimensions();
     renderer.setSize(dimensions.width, dimensions.height, !isCanvas); // don't update CSS for existing canvas elements
 
+    // removes all listeners on dispose
+    const listeners = new AbortController();
+
     // handle WebGL context loss (e.g., when system sleeps)
     const canvas = renderer.domElement;
     canvas.addEventListener('webglcontextlost', async (event) => {
@@ -97,7 +100,7 @@ export async function initializeRendererAPI(container, cursorAPI, globalScale = 
             rendererAPI.requestedFrameId = null;
         }
         rendererAPI.onRenderingActive(false);
-    }, false);
+    }, { signal: listeners.signal });
 
     canvas.addEventListener('webglcontextrestored', async () => {
         // reinitialize renderer settings
@@ -112,7 +115,7 @@ export async function initializeRendererAPI(container, cursorAPI, globalScale = 
             await startScene();
         }
         rendererAPI.onRenderingActive(true);
-    }, false);
+    }, { signal: listeners.signal });
 
     // window can still change size later, make camera aspect dynamic
     async function updateCamera() {
@@ -162,9 +165,10 @@ export async function initializeRendererAPI(container, cursorAPI, globalScale = 
     rendererAPI.updateCamera = updateCamera;
     
     // use ResizeObserver for canvas element to properly detect size changes
+    let resizeTimeout = null;
+    let resizeObserver = null;
     if (isCanvas && typeof ResizeObserver !== 'undefined') {
-        let resizeTimeout = null;
-        const resizeObserver = new ResizeObserver(() => {
+        resizeObserver = new ResizeObserver(() => {
             if (resizeTimeout) clearTimeout(resizeTimeout);
             resizeTimeout = setTimeout(() => {
                 updateCamera();
@@ -173,7 +177,7 @@ export async function initializeRendererAPI(container, cursorAPI, globalScale = 
         resizeObserver.observe(canvas);
     } else {
         // fallback to window resize for non-canvas containers
-        window.addEventListener('resize', updateCamera);
+        window.addEventListener('resize', updateCamera, { signal: listeners.signal });
     }
     
     await updateCamera()
@@ -185,6 +189,15 @@ export async function initializeRendererAPI(container, cursorAPI, globalScale = 
     if (!isCanvas) {
         container.appendChild(renderer.domElement);
     }
+
+    // release the renderer and stop listening for changes
+    rendererAPI.dispose = () => {
+        listeners.abort();
+        if (resizeObserver) resizeObserver.disconnect();
+        clearTimeout(resizeTimeout);
+        renderer.dispose();
+        if (!isCanvas) renderer.domElement.remove();
+    };
 
     return rendererAPI;
 }
