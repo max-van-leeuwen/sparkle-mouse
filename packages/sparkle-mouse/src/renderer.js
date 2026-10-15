@@ -195,6 +195,10 @@ export async function initializeRendererAPI(container, cursorAPI, globalScale = 
         listeners.abort();
         if (resizeObserver) resizeObserver.disconnect();
         clearTimeout(resizeTimeout);
+        // leave the context clean for the next renderer on this canvas, three.js warns on its texImage3D calls otherwise
+        const gl = renderer.getContext();
+        gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, false);
+        gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, false);
         renderer.dispose();
         if (!isCanvas) renderer.domElement.remove();
     };
