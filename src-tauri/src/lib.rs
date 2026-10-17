@@ -2090,6 +2090,16 @@ pub fn run() {
             if !sparkle_params.is_empty() {
                 let _ = app.emit("sparkle-params-changed", sparkle_params);
             }
+
+            // Launched again without arguments (e.g. double-clicking the shortcut): open/focus settings
+            // (macOS handles this via RunEvent::Reopen instead)
+            #[cfg(not(target_os = "macos"))]
+            if args.len() <= 1 {
+                let app_clone = app.clone();
+                tauri::async_runtime::spawn(async move {
+                    let _ = open_settings_window(app_clone, Some(false)).await;
+                });
+            }
         }))
         .manage(DynamicMenuState {
             items: Mutex::new(Vec::new()),

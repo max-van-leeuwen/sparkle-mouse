@@ -1,6 +1,6 @@
 [package]
 name = "sparkle-mouse"
-version = "1.0.12"
+version = "1.0.13"
 description = "Sparkle Mouse"
 authors = ["Max van Leeuwen"]
 license = "MIT"

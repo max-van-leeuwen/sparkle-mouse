@@ -1,7 +1,7 @@
 {
   "name": "sparkle-mouse",
   "private": true,
-  "version": "1.0.12",
+  "version": "1.0.13",
   "license": "MIT",
   "author": "Max van Leeuwen",
   "type": "module",
