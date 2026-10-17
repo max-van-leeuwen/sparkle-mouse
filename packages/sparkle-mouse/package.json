@@ -35,6 +35,7 @@
     "README.md"
   ],
   "scripts": {
+    "dev": "vite playground",
     "build": "vite build",
     "prepublishOnly": "npm run build",
     "test": "echo \"No tests yet\""

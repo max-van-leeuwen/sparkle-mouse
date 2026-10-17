@@ -19,6 +19,7 @@
     "clean": "rm -rf src-tauri/target/debug src-tauri/target/release node_modules dist && npm install",
     "test": "sh -c 'if [ -f /etc/debian_version ] || [ -f /etc/redhat-release ]; then ./scripts/linux-prepare.sh npm run tauri:dev; else npm run tauri:dev; fi'",
     "test:headless": "SPARKLE_HEADLESS=1 npm run test",
+    "check": "npm run build -w sparkle-mouse && npm run typecheck -w sparkle-mouse --if-present && npm run vite:build-dev",
     "build:mac": "npx dotenv-cli -e config.env -- sh -c \"./scripts/generate-attribution.sh && npm run vite:build && npm run tauri:build && ./scripts/set-plist-icon.sh && ./scripts/rebuild-dmg.sh && ./scripts/set-dmg-icon.sh\"",
     "build:macnotarized": "npx dotenv-cli -e config.env -- sh -c \"./scripts/generate-attribution.sh && npm run vite:build && npm run tauri:build && ./scripts/set-plist-icon.sh\" && npx dotenv-cli -e config.env -e .env.signing -- sh -c \"./scripts/sign-notarize-app.sh && ./scripts/rebuild-dmg.sh && ./scripts/set-dmg-icon.sh && ./scripts/sign-notarize-dmg.sh\"",
     "build:win": "bash ./scripts/generate-attribution.sh && npm run vite:build && npm run tauri:build",
